@@ -6,8 +6,8 @@ import fr.li212.codingame.tron.domain.grid.port.Grid;
 import fr.li212.codingame.tron.domain.move.Move;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.infrastructure.astar.AStarGrid;
-import fr.li212.codingame.tron.infrastructure.astar.AStarNode;
 import fr.li212.codingame.tron.infrastructure.astar.AStarPathFinder;
+import fr.li212.codingame.tron.infrastructure.astar.CellWithHeuristic;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGrid;
 
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class BasicSquareGrid implements Grid, AStarGrid, VoronoiGrid {
+public class BasicSquareAStarGrid implements Grid, AStarGrid, VoronoiGrid {
     private final int width;
     private final int height;
     private final Map<SquareCoordinate, SquareCell> cells;
@@ -44,7 +44,7 @@ public class BasicSquareGrid implements Grid, AStarGrid, VoronoiGrid {
         }
     }
 
-    public BasicSquareGrid(
+    public BasicSquareAStarGrid(
             final int width,
             final int height) {
         this.width = width;
@@ -57,8 +57,8 @@ public class BasicSquareGrid implements Grid, AStarGrid, VoronoiGrid {
                 ));
     }
 
-    public BasicSquareGrid(
-            final BasicSquareGrid initialGrid,
+    public BasicSquareAStarGrid(
+            final BasicSquareAStarGrid initialGrid,
             final Collection<PlayerContext> playerContexts) {
         this.width = initialGrid.getWidth();
         this.height = initialGrid.getHeight();
@@ -94,7 +94,7 @@ public class BasicSquareGrid implements Grid, AStarGrid, VoronoiGrid {
         if (cachedDistances.containsKey(key)) {
             return cachedDistances.get(key);
         }
-        final List<AStarNode> path = AStarPathFinder.getNew().findPath(this, (SquareCell) start, (SquareCell) end);
+        final List<CellWithHeuristic> path = AStarPathFinder.getNew().findPath(this, (SquareCell) start, (SquareCell) end);
         final int distance = path.size() - 1;
         cachedDistances.put(key, distance);
         return distance;
@@ -113,7 +113,12 @@ public class BasicSquareGrid implements Grid, AStarGrid, VoronoiGrid {
     }
 
     @Override
-    public Set<AStarNode> getNeighbours(final AStarNode node) {
+    public Collection<CellWithHeuristic> getAStarCells() {
+        return new HashSet<>(this.getCells());
+    }
+
+    @Override
+    public Collection<CellWithHeuristic> getNeighbours(final CellWithHeuristic node) {
         if (!(node instanceof SquareCell)) {
             throw new IllegalStateException("Only Square cell are allowed in this implementation");
         }

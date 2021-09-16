@@ -1,7 +1,7 @@
 package fr.li212.codingame.tron.domain;
 
 import fr.li212.codingame.tron.adapters.grid.AugmentedBasicSquareGridProvider;
-import fr.li212.codingame.tron.adapters.grid.BasicSquareGrid;
+import fr.li212.codingame.tron.adapters.grid.BasicSquareAStarGrid;
 import fr.li212.codingame.tron.adapters.grid.SquareCoordinate;
 import fr.li212.codingame.tron.adapters.io.OutputCodingameTurn;
 import fr.li212.codingame.tron.adapters.parameters.GlobalParameters;
@@ -26,7 +26,7 @@ class PlayTurnTest {
     private final static OutputTurn OUTPUT_TURN = new OutputCodingameTurn();
 
 
-    private static final BasicSquareGrid initialGrid = new BasicSquareGrid(GlobalParameters.GRID_WIDTH, GlobalParameters.GRID_HEIGHT);
+    private static final BasicSquareAStarGrid initialGrid = new BasicSquareAStarGrid(GlobalParameters.GRID_WIDTH, GlobalParameters.GRID_HEIGHT);
 
     private final static SquareCoordinate P1_START = new SquareCoordinate(0, 0);
     private final static SquareCoordinate P2_START = new SquareCoordinate(2, 0);
@@ -57,7 +57,7 @@ class PlayTurnTest {
         @Test
         void playFirstMove() {
             final long startTime = System.currentTimeMillis();
-            final BasicSquareGrid currentGrid = new BasicSquareGrid(initialGrid, PLAYER_CONTEXTS);
+            final BasicSquareAStarGrid currentGrid = new BasicSquareAStarGrid(initialGrid, PLAYER_CONTEXTS);
             final PlayTurn playTurn = new PlayTurn(
                     AUGMENTED_BASIC_SQUARE_GRID_PROVIDER,
                     currentGrid,

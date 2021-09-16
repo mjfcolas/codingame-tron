@@ -1,14 +1,13 @@
 package fr.li212.codingame.tron.adapters.grid;
 
 import fr.li212.codingame.tron.domain.grid.port.Cell;
-import fr.li212.codingame.tron.infrastructure.astar.AStarNode;
-import fr.li212.codingame.tron.infrastructure.dijkstra.Vertex;
+import fr.li212.codingame.tron.infrastructure.astar.CellWithHeuristic;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
 import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintableVoronoiCell;
 
 import java.util.Objects;
 
-public class SquareCell implements Cell, AStarNode, VoronoiCell, PrintableVoronoiCell, Vertex {
+public class SquareCell implements Cell, CellWithHeuristic, VoronoiCell, PrintableVoronoiCell {
     private final SquareCoordinate coordinate;
     private final boolean isAccessible;
 
@@ -22,17 +21,18 @@ public class SquareCell implements Cell, AStarNode, VoronoiCell, PrintableVorono
     }
 
     @Override
-    public int getH(final AStarNode destNode) {
-        if (!(destNode instanceof SquareCell)) {
+    public int getHeuristic(final CellWithHeuristic goal) {
+        if (!(goal instanceof SquareCell)) {
             throw new IllegalStateException("Only Square cell are allowed in this implementation");
         }
-        return this.coordinate.distance(((SquareCell) destNode).getCoordinate());
+        return this.coordinate.distance(((SquareCell) goal).getCoordinate());
     }
 
     @Override
     public int getPriceToGo() {
         return 1;
     }
+
     @Override
     public int getX() {
         return this.coordinate.getX();

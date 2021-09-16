@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 
 public class AugmentedBasicSquareGrid implements AugmentedGrid {
 
-    private final BasicSquareGrid underlyingGrid;
+    private final BasicSquareAStarGrid underlyingGrid;
     private final VoronoiDiagram voronoiDiagram;
 
     public AugmentedBasicSquareGrid(
             final VoronoiDiagramProvider voronoiDiagramProvider,
-            final BasicSquareGrid underlyingGrid,
+            final BasicSquareAStarGrid underlyingGrid,
             final Collection<PlayerContext> playerContexts) {
         this.underlyingGrid = underlyingGrid;
         this.voronoiDiagram = voronoiDiagramProvider
