@@ -6,40 +6,36 @@ import java.util.stream.Collectors;
 
 public class AStarPathFinder {
 
-    private static Long numberOfcalls = 0L;
-    private static Long cumulatedTime = 0L;
-
     public static AStarPathFinder getNew() {
         return new AStarPathFinder();
     }
 
     public List<CellWithHeuristic> findPath(final AStarGrid aStarGrid, final CellWithHeuristic start, final CellWithHeuristic goal) {
-        final long startTime = System.currentTimeMillis();
-        numberOfcalls++;
 
-        final Set<AStarNode> copiedGrid = aStarGrid.getAStarCells().stream()
-                .map(cellWithHeuristic -> new AStarNode(cellWithHeuristic, aStarGrid, goal))
-                .collect(Collectors.toSet());
+        final Map<CellWithHeuristic, AStarNode> copiedGrid = new HashMap<>();
 
-        AStarNode startNode = copiedGrid.stream().filter(node -> node.getUnderlyingNode().equals(start)).findAny().orElseThrow(() -> new IllegalStateException("Start not found in grid"));
-        AStarNode goalNode = copiedGrid.stream().filter(node -> node.getUnderlyingNode().equals(goal)).findAny().orElseThrow(() -> new IllegalStateException("Goal not found in grid"));
+        final CellWithHeuristic[] cellArray = aStarGrid.getAStarCells();
+        for(CellWithHeuristic current: cellArray){
+            copiedGrid.put(current, new AStarNode(current, goal));
+        }
+
+        final Map<AStarNode, AStarNode[]> cachedNeighbours = new HashMap<>();
+
+        AStarNode startNode = copiedGrid.get(start);
+        AStarNode goalNode = copiedGrid.get(goal);
 
         final Queue<AStarNode> openSet = new PriorityBlockingQueue<>();
         final Map<AStarNode, AStarNode> closedMap = new HashMap<>();
 
         startNode.setDistanceFromStartToNode(0);
         openSet.add(startNode);
-
+        closedMap.put(startNode, startNode);
         while (!openSet.isEmpty()) {
             AStarNode currentNode = openSet.remove();
             if (currentNode.equals(goalNode)) {
-                cumulatedTime += System.currentTimeMillis() - startTime;
-                if (numberOfcalls % 100 == 0) {
-                    System.err.println("A* CALL: " + numberOfcalls + " CUMULATED TIME: " + cumulatedTime);
-                }
                 return computePath(currentNode);
             }
-            Set<AStarNode> neighbours = currentNode.getNeighbours();
+            AStarNode[] neighbours = getNeighbours(currentNode, cachedNeighbours, copiedGrid, aStarGrid);
             for (AStarNode neighbour : neighbours) {
                 final int predictedDistanceToStartNode = currentNode.getDistanceFromStartToNode() + neighbour.getUnderlyingNode().getPriceToGo();
                 final Optional<AStarNode> nodeInClosedMap = Optional.ofNullable(closedMap.get(neighbour));
@@ -55,7 +51,7 @@ public class AStarPathFinder {
         throw new IllegalStateException("No path found");
     }
 
-    private List<CellWithHeuristic> computePath(final AStarNode startNode){
+    private List<CellWithHeuristic> computePath(final AStarNode startNode) {
         final List<AStarNode> path = new ArrayList<>();
         path.add(startNode);
         AStarNode currentNode = startNode;
@@ -64,5 +60,23 @@ public class AStarPathFinder {
             path.add(currentNode);
         }
         return path.stream().map(AStarNode::getUnderlyingNode).collect(Collectors.toList());
+    }
+
+
+    private AStarNode[] getNeighbours(
+            final AStarNode node,
+            final Map<AStarNode, AStarNode[]> cachedNeighbours,
+            final Map<CellWithHeuristic, AStarNode> nodePool,
+            final AStarGrid grid) {
+        if (!cachedNeighbours.containsKey(node)) {
+            List<CellWithHeuristic> rawNeighbours = grid.getNeighbours(node.getUnderlyingNode());
+            final AStarNode[] neighbours = new AStarNode[rawNeighbours.size()];
+
+            for (int i = 0; i < rawNeighbours.size(); i++) {
+                neighbours[i] = nodePool.get(rawNeighbours.get(i));
+            }
+            cachedNeighbours.put(node, neighbours);
+        }
+        return cachedNeighbours.get(node);
     }
 }

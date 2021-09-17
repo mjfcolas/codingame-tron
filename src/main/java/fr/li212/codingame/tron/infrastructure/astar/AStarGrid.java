@@ -1,9 +1,9 @@
 package fr.li212.codingame.tron.infrastructure.astar;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface AStarGrid {
-    Collection<CellWithHeuristic> getNeighbours(final CellWithHeuristic node);
+    List<CellWithHeuristic> getNeighbours(final CellWithHeuristic node);
 
-    Collection<CellWithHeuristic> getAStarCells();
+    CellWithHeuristic[] getAStarCells();
 }

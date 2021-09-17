@@ -42,7 +42,7 @@ public class PlayTurn {
                 .map(move -> new CellWithMove(
                         grid.getCell(move.computeMove(controlledPlayerContext.getCurrentCoordinate())),
                         move))
-                .filter(cellWithMove -> cellWithMove.getCell() != null)
+                .filter(cellWithMove -> cellWithMove.getCell() != null && cellWithMove.getCell().isAccessible())
                 .map(CellWithMove::getMove)
                 .map(move -> {
                     final Collection<PlayerContext> predictedNextPlayerContexts = PlayerContext.predictAllPlayerContextsWithControlledPlayerMove(playerContexts, move);

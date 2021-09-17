@@ -1,5 +1,6 @@
 package fr.li212.codingame.tron.adapters.grid;
 
+import fr.li212.codingame.tron.adapters.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
 import fr.li212.codingame.tron.domain.grid.port.Grid;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 public class AugmentedBasicSquareGrid implements AugmentedGrid {
 
     private final BasicSquareAStarGrid underlyingGrid;
+    private final BasicSquareAStarGrid reducedGrid;
     private final VoronoiDiagram voronoiDiagram;
 
     public AugmentedBasicSquareGrid(
@@ -20,8 +22,9 @@ public class AugmentedBasicSquareGrid implements AugmentedGrid {
             final BasicSquareAStarGrid underlyingGrid,
             final Collection<PlayerContext> playerContexts) {
         this.underlyingGrid = underlyingGrid;
+        this.reducedGrid = underlyingGrid.reduce(GlobalParameters.REDUCTION_FACTOR);
         this.voronoiDiagram = voronoiDiagramProvider
-                .get(underlyingGrid,
+                .get(reducedGrid,
                         playerContexts.stream()
                                 .map(this::germFromPlayerContext)
                                 .collect(Collectors.toSet()));
@@ -33,17 +36,16 @@ public class AugmentedBasicSquareGrid implements AugmentedGrid {
     }
 
     @Override
-    public int numberOfVoronoiCellsForPlayer(final PlayerContext playerContext) {
-        return voronoiDiagram.getVoronoiSpaces().get(this.germFromPlayerContext(playerContext)).size();
+    public float voronoiScore(final PlayerContext playerContext) {
+        return (float) numberOfVoronoiCellsForPlayer(playerContext) / (reducedGrid.getWidth() * reducedGrid.getHeight());
     }
 
-    @Override
-    public float voronoiScore(final PlayerContext playerContext) {
-        return (float) numberOfVoronoiCellsForPlayer(playerContext);
+    private int numberOfVoronoiCellsForPlayer(final PlayerContext playerContext) {
+        return voronoiDiagram.getVoronoiSpaces().get(this.germFromPlayerContext(playerContext)).size();
     }
 
     private VoronoiGerm germFromPlayerContext(final PlayerContext playerContext) {
         return new VoronoiGerm((SquareCell) underlyingGrid
-                .getCell(playerContext.getCurrentCoordinate()));
+                .getCell(playerContext.getCurrentCoordinate().reduce(GlobalParameters.REDUCTION_FACTOR)));
     }
 }

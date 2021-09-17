@@ -37,6 +37,11 @@ public class SquareCoordinate implements Coordinate {
         return Math.abs(this.getX() - startSquareCoordinate.getX()) + Math.abs(this.getY() - startSquareCoordinate.getY());
     }
 
+    @Override
+    public Coordinate reduce(final int reductionFactor) {
+        return new SquareCoordinate(this.getX() / reductionFactor, this.getY() / reductionFactor);
+    }
+
     private enum SquareCoordinateMoves {
         UP(sourceCoordinate -> new SquareCoordinate(sourceCoordinate.getX(), sourceCoordinate.getY() - 1)),
         DOWN(sourceCoordinate -> new SquareCoordinate(sourceCoordinate.getX(), sourceCoordinate.getY() + 1)),

@@ -58,7 +58,7 @@ public class SquareCell implements Cell, CellWithHeuristic, VoronoiCell, Printab
 
     @Override
     public int hashCode() {
-        return Objects.hash(coordinate);
+        return 17 * coordinate.getX() + 31 * coordinate.getY();
     }
 
     @Override
