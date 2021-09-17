@@ -29,7 +29,7 @@ class VoronoiDiagramProviderTest {
     @Test
     void getDiagram() {
         final VoronoiDiagramProvider provider = new VoronoiDiagramProvider();
-        provider.get(GRID, GERMS);
+        provider.get(GRID, GERMS, 1);
     }
 
 }

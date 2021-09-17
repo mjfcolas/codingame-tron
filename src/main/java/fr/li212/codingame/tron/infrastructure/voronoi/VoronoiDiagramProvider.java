@@ -1,11 +1,9 @@
 package fr.li212.codingame.tron.infrastructure.voronoi;
 
-import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintVoronoiDiagram;
-
 import java.util.*;
 
 public class VoronoiDiagramProvider {
-    public VoronoiDiagram get(final VoronoiGrid grid, Collection<VoronoiGerm> germs) {
+    public VoronoiDiagram get(final VoronoiGrid grid, final Collection<VoronoiGerm> germs, final int reductionFactor) {
         final Map<VoronoiGerm, Set<VoronoiCellWithDistance>> distancesByGerm = new HashMap<>();
         final Map<VoronoiCell, Set<VoronoiCellWithDistance>> distancesByCell = new HashMap<>();
 
@@ -14,6 +12,9 @@ public class VoronoiDiagramProvider {
                 distancesByGerm.put(germ, new HashSet<>());
             }
             for (VoronoiCell cell : grid.getVoronoiCells()) {
+                if (!cell.isVoronoiEligible(reductionFactor)) {
+                    continue;
+                }
                 if (!distancesByCell.containsKey(cell)) {
                     distancesByCell.put(cell, new HashSet<>());
                 }
@@ -48,7 +49,7 @@ public class VoronoiDiagramProvider {
         }
 
         final VoronoiDiagram result = new VoronoiDiagram(diagram);
-        PrintVoronoiDiagram.print(result);
+        //PrintVoronoiDiagram.print(result);
         return result;
     }
 }

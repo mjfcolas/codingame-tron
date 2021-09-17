@@ -32,4 +32,9 @@ public class DummyCell implements VoronoiCell, PrintableVoronoiCell {
                 ", y=" + y +
                 '}';
     }
+
+    @Override
+    public boolean isVoronoiEligible(final int reductionFactor) {
+        return true;
+    }
 }

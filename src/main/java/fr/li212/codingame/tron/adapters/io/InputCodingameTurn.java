@@ -21,12 +21,14 @@ public class InputCodingameTurn {
             int Y0 = in.nextInt();
             int X1 = in.nextInt();
             int Y1 = in.nextInt();
-            final PlayerContext currentContext = new PlayerContext(
-                    new PlayerIdentifier(i),
-                    new SquareCoordinate(X0, Y0),
-                    new SquareCoordinate(X1, Y1),
-                    i == P);
-            playerContexts.add(currentContext);
+            if(X0 != -1) {
+                final PlayerContext currentContext = new PlayerContext(
+                        new PlayerIdentifier(i),
+                        new SquareCoordinate(X0, Y0),
+                        new SquareCoordinate(X1, Y1),
+                        i == P);
+                playerContexts.add(currentContext);
+            }
         }
         playerContexts.forEach(System.err::println);
         return playerContexts;

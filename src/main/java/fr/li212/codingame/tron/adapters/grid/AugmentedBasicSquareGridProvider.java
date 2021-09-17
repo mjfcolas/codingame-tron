@@ -1,5 +1,6 @@
 package fr.li212.codingame.tron.adapters.grid;
 
+import fr.li212.codingame.tron.adapters.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
 import fr.li212.codingame.tron.domain.grid.port.Grid;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
@@ -25,6 +26,7 @@ public class AugmentedBasicSquareGridProvider implements AugmentedGridProvider {
         return new AugmentedBasicSquareGrid(
                 voronoiDiagramProvider,
                 (BasicSquareAStarGrid) grid,
-                newPlayerContexts);
+                newPlayerContexts,
+                GlobalParameters.VORONOI_REDUCTION_FACTOR);
     }
 }

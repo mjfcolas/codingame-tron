@@ -49,6 +49,11 @@ public class SquareCell implements Cell, CellWithHeuristic, VoronoiCell, Printab
     }
 
     @Override
+    public boolean isVoronoiEligible(final int reductionFactor) {
+        return this.getX() % reductionFactor/2 == 0 && this.getY() % reductionFactor/2 == 0;
+    }
+
+    @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

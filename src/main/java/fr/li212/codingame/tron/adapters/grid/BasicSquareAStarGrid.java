@@ -76,37 +76,6 @@ public class BasicSquareAStarGrid implements Grid, AStarGrid, VoronoiGrid {
         ));
     }
 
-    private BasicSquareAStarGrid(
-            final int width,
-            final int height,
-            Map<SquareCoordinate, SquareCell> cells) {
-        this.width = width;
-        this.height = height;
-        this.cells = cells;
-    }
-
-    public BasicSquareAStarGrid reduce(final int reductionFactor) {
-        if (this.width % reductionFactor != 0 || this.height % reductionFactor != 0) {
-            throw new IllegalArgumentException("Reduction factor must divide height and width");
-        }
-        final int newWidth = this.width / reductionFactor;
-        final int newHeight = this.height / reductionFactor;
-        final Map<SquareCoordinate, SquareCell> newCells = IntStream.range(0, newWidth).boxed()
-                .flatMap(x -> IntStream.range(0, newHeight).boxed().map(y -> new SquareCoordinate(x, y)))
-                .map(targetCoordinate -> {
-                    final boolean targetAccessible = this.cells.values().stream()
-                            .filter(sourceCell -> sourceCell.getX() >= reductionFactor * targetCoordinate.getX()
-                                    && sourceCell.getX() < targetCoordinate.getX() + 1
-                                    && sourceCell.getY() >= reductionFactor * targetCoordinate.getY()
-                                    && sourceCell.getY() < targetCoordinate.getY() + 1).allMatch(SquareCell::isAccessible);
-                    return new SquareCell(targetCoordinate, targetAccessible);
-                }).collect(Collectors.toMap(
-                        SquareCell::getCoordinate,
-                        squareCell -> squareCell
-                ));
-        return new BasicSquareAStarGrid(newWidth, newHeight, newCells);
-    }
-
     @Override
     public Cell getCell(final Coordinate coordinate) {
         if (!(coordinate instanceof SquareCoordinate)) {
@@ -127,8 +96,13 @@ public class BasicSquareAStarGrid implements Grid, AStarGrid, VoronoiGrid {
             return cachedDistances.get(key);
         }
 
-        final List<CellWithHeuristic> path = AStarPathFinder.getNew().findPath(this, (SquareCell) start, (SquareCell) end);
-        final int distance = path.size() - 1;
+        int distance;
+        try {
+            final List<CellWithHeuristic> path = AStarPathFinder.getNew().findPath(this, (SquareCell) start, (SquareCell) end);
+            distance = path.size() - 1;
+        }catch (IllegalStateException e){
+            distance = Integer.MAX_VALUE;
+        }
         cachedDistances.put(key, distance);
         return distance;
     }
