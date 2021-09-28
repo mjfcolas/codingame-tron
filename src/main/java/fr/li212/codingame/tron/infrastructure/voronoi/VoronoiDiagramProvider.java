@@ -1,9 +1,10 @@
 package fr.li212.codingame.tron.infrastructure.voronoi;
 
 import fr.li212.codingame.tron.domain.grid.port.Coordinate;
-import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintVoronoiDiagram;
+import fr.li212.codingame.tron.domain.move.Move;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class VoronoiDiagramProvider {
 
@@ -32,12 +33,12 @@ public class VoronoiDiagramProvider {
     }
 
     public VoronoiDiagram get(final VoronoiGrid grid, final Collection<VoronoiGerm> germs, final int reductionFactor) {
-        final Map<StartAndDestKey, Integer> cachedDistances = new HashMap<>();
 
-        final Map<VoronoiGerm, Set<VoronoiCellWithDistance>> distancesByGerm = new HashMap<>();
-        final Map<VoronoiCell, Set<VoronoiCellWithDistance>> distancesByCell = new HashMap<>();
+        final Map<VoronoiGerm, Set<VoronoiCellWithDistanceAndDirectionToGo>> distancesByGerm = new HashMap<>();
+        final Map<VoronoiCell, Set<VoronoiCellWithDistanceAndDirectionToGo>> distancesByCell = new HashMap<>();
 
         for (VoronoiGerm germ : germs) {
+            final Map<StartAndDestKey, VoronoiCellWithDistanceAndDirectionToGo> cachedDistances = new HashMap<>();
             if (!distancesByGerm.containsKey(germ)) {
                 distancesByGerm.put(germ, new HashSet<>());
             }
@@ -59,14 +60,19 @@ public class VoronoiDiagramProvider {
                             final StartAndDestKey currentDistanceKey = new StartAndDestKey(
                                     path.get(maxPathSize - 1), path.get(positionInPath)
                             );
-                            cachedDistances.put(currentDistanceKey, maxPathSize - positionInPath);
+                            final Move direction = Arrays.stream(Move.values())
+                                    .filter(move -> path.size() > 2 && path.get(maxPathSize - 1).adjacentCoordinate(move).equals(path.get(maxPathSize - 2)))
+                                    .findFirst()
+                                    .orElse(null);
+                            final VoronoiCellWithDistanceAndDirectionToGo cellWithDistanceAndDirection
+                                    = new VoronoiCellWithDistanceAndDirectionToGo(germ, cell, maxPathSize - positionInPath, direction);
+                            cachedDistances.put(currentDistanceKey, cellWithDistanceAndDirection);
                         }
                     } catch (final IllegalStateException e) {
-                        cachedDistances.put(distanceCacheKey, Integer.MAX_VALUE);
+                        cachedDistances.put(distanceCacheKey, new VoronoiCellWithDistanceAndDirectionToGo(germ, cell, Integer.MAX_VALUE, null));
                     }
                 }
-                final int distance = cachedDistances.get(distanceCacheKey);
-                final VoronoiCellWithDistance cellWithDistance = new VoronoiCellWithDistance(germ, cell, distance);
+                final VoronoiCellWithDistanceAndDirectionToGo cellWithDistance = cachedDistances.get(distanceCacheKey);
                 distancesByGerm.get(germ)
                         .add(cellWithDistance);
                 distancesByCell.get(cell)
@@ -74,29 +80,24 @@ public class VoronoiDiagramProvider {
             }
         }
 
-        final Map<VoronoiGerm, Set<VoronoiCell>> diagram = new HashMap<>();
+        final Map<VoronoiGerm, Set<VoronoiCellWithDistanceAndDirectionToGo>> conflictualCellsByGerm = new HashMap<>();
 
         for (VoronoiGerm voronoiGerm : germs) {
-            if (!diagram.containsKey(voronoiGerm)) {
-                diagram.put(voronoiGerm, new HashSet<>());
+            if (!conflictualCellsByGerm.containsKey(voronoiGerm)) {
+                conflictualCellsByGerm.put(voronoiGerm, new HashSet<>());
             }
-            final Set<VoronoiCellWithDistance> currentDistancesForGerm = distancesByGerm.get(voronoiGerm);
-            for (VoronoiCellWithDistance currentDistance : currentDistancesForGerm) {
-                final int minimumDistance = distancesByCell.get(currentDistance.getCell())
-                        .stream().mapToInt(VoronoiCellWithDistance::getDistance).min()
-                        .orElseThrow(() -> new IllegalStateException("Distance should have been found"));
+            final Set<VoronoiCellWithDistanceAndDirectionToGo> currentDistancesForGerm = distancesByGerm.get(voronoiGerm);
+            for (VoronoiCellWithDistanceAndDirectionToGo currentDistance : currentDistancesForGerm) {
+                final Set<VoronoiCellWithDistanceAndDirectionToGo> conflictualCells = distancesByCell.get(currentDistance.getCell())
+                        .stream().filter(otherGermDistance -> otherGermDistance.getDistance().equals(currentDistance.getDistance())
+                                || otherGermDistance.getDistance() == currentDistance.getDistance() - 1)
+                        .collect(Collectors.toSet());
 
-                final long numberOfDistanceInferiorToMinimum = distancesByCell.get(currentDistance.getCell())
-                        .stream().filter(voronoiCellWithDistance -> voronoiCellWithDistance.getDistance() <= minimumDistance)
-                        .count();
-
-                if (numberOfDistanceInferiorToMinimum <= 1 && currentDistance.getDistance().equals(minimumDistance)) {
-                    diagram.get(voronoiGerm).add(currentDistance.getCell());
-                }
+                conflictualCellsByGerm.get(voronoiGerm).addAll(conflictualCells);
             }
         }
 
-        final VoronoiDiagram result = new VoronoiDiagram(diagram);
+        final VoronoiDiagram result = new VoronoiDiagram(conflictualCellsByGerm);
         //PrintVoronoiDiagram.print(grid, result);
         return result;
     }

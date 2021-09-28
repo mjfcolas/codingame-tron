@@ -4,13 +4,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class VoronoiDiagram {
-    private final Map<VoronoiGerm, Set<VoronoiCell>> voronoiSpaces;
+    private final Map<VoronoiGerm, Set<VoronoiCellWithDistanceAndDirectionToGo>> conflictualCells;
 
-    public VoronoiDiagram(final Map<VoronoiGerm, Set<VoronoiCell>> voronoiSpaces) {
-        this.voronoiSpaces = voronoiSpaces;
+    public VoronoiDiagram(final Map<VoronoiGerm, Set<VoronoiCellWithDistanceAndDirectionToGo>> conflictualCells) {
+        this.conflictualCells = conflictualCells;
     }
 
-    public Map<VoronoiGerm, Set<VoronoiCell>> getVoronoiSpaces() {
-        return voronoiSpaces;
+    public Map<VoronoiGerm, Set<VoronoiCellWithDistanceAndDirectionToGo>> getConflictualCells() {
+        return conflictualCells;
     }
 }

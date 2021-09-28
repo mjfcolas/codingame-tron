@@ -38,22 +38,18 @@ public class PlayTurn {
     }
 
     private Move getMove() {
+        final AugmentedGrid augmentedGridForMove = augmentedGridProvider.get(grid, playerContexts);
         final List<ScoredMove> moves = Arrays.stream(Move.values())
                 .map(move -> new CellWithMove(
                         grid.getCell(move.computeMove(controlledPlayerContext.getCurrentCoordinate())),
                         move))
                 .filter(cellWithMove -> cellWithMove.getCell() != null && cellWithMove.getCell().isAccessible())
                 .map(CellWithMove::getMove)
-                .map(move -> {
-                    final Collection<PlayerContext> predictedNextPlayerContexts = PlayerContext.predictAllPlayerContextsWithControlledPlayerMove(playerContexts, move);
-                    final PlayerContext predictedControlledPlayerContext = PlayerContext.predictControlledPlayerContext(controlledPlayerContext, move);
-                    final AugmentedGrid augmentedGridForMove = augmentedGridProvider.get(grid, predictedNextPlayerContexts);
-                    return new ScoredMove(move, augmentedGridForMove.voronoiScore(predictedControlledPlayerContext));
-                })
+                .map(move -> new ScoredMove(move, augmentedGridForMove.numberOfConflictualCellForMove(move, controlledPlayerContext)))
                 .sorted()
                 .collect(Collectors.toList());
         moves.forEach(System.err::println);
-        if(moves.isEmpty()){
+        if (moves.isEmpty()) {
             return Move.UP;
         }
         return moves.get(0).getMove();

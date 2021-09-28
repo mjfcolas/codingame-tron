@@ -1,21 +1,30 @@
 package fr.li212.codingame.tron.infrastructure.voronoi;
 
-public class VoronoiCellWithDistance {
+import fr.li212.codingame.tron.domain.move.Move;
+
+public class VoronoiCellWithDistanceAndDirectionToGo {
     private final VoronoiGerm germ;
     private final VoronoiCell cell;
     private final int distance;
+    private final Move firstMoveToGo;
 
-    public VoronoiCellWithDistance(
+    public VoronoiCellWithDistanceAndDirectionToGo(
             final VoronoiGerm germ,
             final VoronoiCell cell,
-            final int distance) {
+            final int distance,
+            final Move firstMoveToGo) {
         this.germ = germ;
         this.cell = cell;
         this.distance = distance;
+        this.firstMoveToGo = firstMoveToGo;
     }
 
     public Integer getDistance() {
         return distance;
+    }
+
+    public Move getFirstMoveToGo() {
+        return firstMoveToGo;
     }
 
     public VoronoiCell getCell() {

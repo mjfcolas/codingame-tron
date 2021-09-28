@@ -1,7 +1,7 @@
 package fr.li212.codingame.tron.domain;
 
 public enum ScoreCoefficients {
-    BEST_VORONOI(1);
+    BEST_CONFLICTUAL_CELL(1);
 
     final int coefficient;
 
