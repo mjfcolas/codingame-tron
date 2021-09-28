@@ -15,10 +15,12 @@ public class SquareCoordinate implements Coordinate {
         this.y = y;
     }
 
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public int getY() {
         return y;
     }
@@ -30,11 +32,7 @@ public class SquareCoordinate implements Coordinate {
 
     @Override
     public int distance(final Coordinate startCoordinate) {
-        if (!(startCoordinate instanceof SquareCoordinate)) {
-            throw new IllegalStateException("Only Square Coordinates are allowed in this implementation");
-        }
-        final SquareCoordinate startSquareCoordinate = (SquareCoordinate) startCoordinate;
-        return Math.abs(this.getX() - startSquareCoordinate.getX()) + Math.abs(this.getY() - startSquareCoordinate.getY());
+        return Math.abs(this.getX() - startCoordinate.getX()) + Math.abs(this.getY() - startCoordinate.getY());
     }
 
     private enum SquareCoordinateMoves {

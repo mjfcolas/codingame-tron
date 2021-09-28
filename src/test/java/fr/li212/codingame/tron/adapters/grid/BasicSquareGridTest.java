@@ -48,20 +48,7 @@ public class BasicSquareGridTest {
             "when initializing a grid," +
             "then grid is initialized with correct dimensions")
     void initiateGrid() {
-        final BasicSquareAStarGrid grid = new BasicSquareAStarGrid(A_WIDTH, A_HEIGHT);
+        final BasicSquareGrid grid = new BasicSquareGrid(A_WIDTH, A_HEIGHT);
         Assertions.assertEquals(A_WIDTH * A_HEIGHT, grid.getVoronoiCells().size());
-    }
-
-    @Test
-    @DisplayName(
-            "Given another grid," +
-                    "when initializing a grid," +
-                    "then grid is initialized with unsafe cells")
-    void initiateGridFromAnotherGrid() {
-        final BasicSquareAStarGrid initialGrid = new BasicSquareAStarGrid(A_WIDTH, A_HEIGHT);
-        final BasicSquareAStarGrid turnOneGrid = new BasicSquareAStarGrid(initialGrid, new HashSet<>(Arrays.asList(P1_FIRST_PLAYER_CONTEXT, P2_FIRST_PLAYER_CONTEXT)));
-        final BasicSquareAStarGrid turnTwoGrid = new BasicSquareAStarGrid(turnOneGrid, new HashSet<>(Arrays.asList(P1_SECOND_PLAYER_CONTEXT, P2_SECOND_PLAYER_CONTEXT)));
-        Assertions.assertEquals(A_WIDTH * A_HEIGHT, initialGrid.getCells().size());
-        Assertions.assertEquals(2, turnTwoGrid.getCells().size());
     }
 }

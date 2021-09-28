@@ -29,8 +29,9 @@ public class InputCodingameTurn {
                         i == P);
                 playerContexts.add(currentContext);
             }
+            System.err.println("P" + i + ", X0:" + X0 +", Y0:" + Y0 + ", X1:" + X1 + ", Y1: " + Y1);
         }
-        playerContexts.forEach(System.err::println);
+
         return playerContexts;
     }
 }

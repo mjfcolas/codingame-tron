@@ -1,9 +1,39 @@
 package fr.li212.codingame.tron.infrastructure.voronoi;
 
+import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintVoronoiDiagram;
+
 import java.util.*;
 
 public class VoronoiDiagramProvider {
+
+    static class StartAndDestKey {
+        private final Coordinate start;
+        private final Coordinate end;
+
+        public StartAndDestKey(final Coordinate start, final Coordinate end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            final StartAndDestKey that = (StartAndDestKey) o;
+            return Objects.equals(start, that.start) && Objects.equals(end, that.end)
+                    || Objects.equals(start, that.end) && Objects.equals(end, that.start);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(start, end) + Objects.hash(end, start);
+        }
+    }
+
     public VoronoiDiagram get(final VoronoiGrid grid, final Collection<VoronoiGerm> germs, final int reductionFactor) {
+        final Map<StartAndDestKey, Integer> cachedDistances = new HashMap<>();
+
         final Map<VoronoiGerm, Set<VoronoiCellWithDistance>> distancesByGerm = new HashMap<>();
         final Map<VoronoiCell, Set<VoronoiCellWithDistance>> distancesByCell = new HashMap<>();
 
@@ -18,11 +48,29 @@ public class VoronoiDiagramProvider {
                 if (!distancesByCell.containsKey(cell)) {
                     distancesByCell.put(cell, new HashSet<>());
                 }
-                final VoronoiCellWithDistance newDistance = new VoronoiCellWithDistance(germ, cell, grid.distance(germ.getCell(), cell));
+                final StartAndDestKey distanceCacheKey = new StartAndDestKey(
+                        germ.getCell().getCoordinate(), cell.getCoordinate()
+                );
+                if (!cachedDistances.containsKey(distanceCacheKey)) {
+                    try {
+                        final List<Coordinate> path = grid.path(germ.getCell(), cell);
+                        final int maxPathSize = path.size();
+                        for (int positionInPath = maxPathSize - 1; positionInPath >= 0; positionInPath--) {
+                            final StartAndDestKey currentDistanceKey = new StartAndDestKey(
+                                    path.get(maxPathSize - 1), path.get(positionInPath)
+                            );
+                            cachedDistances.put(currentDistanceKey, maxPathSize - positionInPath);
+                        }
+                    } catch (final IllegalStateException e) {
+                        cachedDistances.put(distanceCacheKey, Integer.MAX_VALUE);
+                    }
+                }
+                final int distance = cachedDistances.get(distanceCacheKey);
+                final VoronoiCellWithDistance cellWithDistance = new VoronoiCellWithDistance(germ, cell, distance);
                 distancesByGerm.get(germ)
-                        .add(newDistance);
+                        .add(cellWithDistance);
                 distancesByCell.get(cell)
-                        .add(newDistance);
+                        .add(cellWithDistance);
             }
         }
 
@@ -49,7 +97,7 @@ public class VoronoiDiagramProvider {
         }
 
         final VoronoiDiagram result = new VoronoiDiagram(diagram);
-        //PrintVoronoiDiagram.print(result);
+        //PrintVoronoiDiagram.print(grid, result);
         return result;
     }
 }

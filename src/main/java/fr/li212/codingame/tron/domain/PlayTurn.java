@@ -53,6 +53,9 @@ public class PlayTurn {
                 .sorted()
                 .collect(Collectors.toList());
         moves.forEach(System.err::println);
+        if(moves.isEmpty()){
+            return Move.UP;
+        }
         return moves.get(0).getMove();
     }
 

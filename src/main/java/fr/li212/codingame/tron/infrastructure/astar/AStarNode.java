@@ -1,19 +1,22 @@
 package fr.li212.codingame.tron.infrastructure.astar;
 
+import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+
 import java.util.Objects;
 
 public class AStarNode implements Comparable<AStarNode> {
 
-    private final CellWithHeuristic underlyingNode;
+    private final Coordinate underlyingCoordinate;
     private final int underlyingNodeHeuristic;
     private AStarNode predecessor;
     private Integer distanceFromStartToNode = null;
+    private boolean isClosed = false;
 
     public AStarNode(
-            final CellWithHeuristic underlyingNode,
-            final CellWithHeuristic goal) {
-        this.underlyingNode = underlyingNode;
-        this.underlyingNodeHeuristic = this.underlyingNode.getHeuristic(goal);
+            final Coordinate underlyingCoordinate,
+            final Coordinate goal) {
+        this.underlyingCoordinate = underlyingCoordinate;
+        this.underlyingNodeHeuristic = underlyingCoordinate.distance(goal);
     }
 
     public int getHeuristic() {
@@ -22,11 +25,6 @@ public class AStarNode implements Comparable<AStarNode> {
         }
         return this.underlyingNodeHeuristic + distanceFromStartToNode;
     }
-
-    public CellWithHeuristic getUnderlyingNode() {
-        return underlyingNode;
-    }
-
     public Integer getDistanceFromStartToNode() {
         return distanceFromStartToNode;
     }
@@ -43,6 +41,18 @@ public class AStarNode implements Comparable<AStarNode> {
         return predecessor;
     }
 
+    public Coordinate getUnderlyingCoordinate() {
+        return underlyingCoordinate;
+    }
+
+    public boolean isClosed() {
+        return isClosed;
+    }
+
+    public void setClosed() {
+        isClosed = true;
+    }
+
     @Override
     public int compareTo(final AStarNode toCompare) {
         return this.getHeuristic() - toCompare.getHeuristic();
@@ -53,18 +63,18 @@ public class AStarNode implements Comparable<AStarNode> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final AStarNode starNode = (AStarNode) o;
-        return Objects.equals(underlyingNode, starNode.underlyingNode);
+        return Objects.equals(underlyingCoordinate, starNode.underlyingCoordinate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(underlyingNode);
+        return Objects.hash(underlyingCoordinate);
     }
 
     @Override
     public String toString() {
         return "AStarNode{" +
-                "underlyingNode=" + underlyingNode + ", " +
+                "underlyingCoordinate=" + underlyingCoordinate + ", " +
                 "heuristic=" + (distanceFromStartToNode == null ? "null" : getHeuristic()) +
                 '}';
     }

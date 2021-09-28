@@ -20,12 +20,12 @@ public class AugmentedBasicSquareGridProvider implements AugmentedGridProvider {
 
     @Override
     public AugmentedGrid get(final Grid grid, final Collection<PlayerContext> newPlayerContexts) {
-        if (!(grid instanceof BasicSquareAStarGrid)) {
+        if (!(grid instanceof BasicSquareGrid)) {
             throw new IllegalStateException("Only Basic square grid are allowed in this implementation");
         }
         return new AugmentedBasicSquareGrid(
                 voronoiDiagramProvider,
-                (BasicSquareAStarGrid) grid,
+                (BasicSquareGrid) grid,
                 newPlayerContexts,
                 GlobalParameters.VORONOI_REDUCTION_FACTOR);
     }

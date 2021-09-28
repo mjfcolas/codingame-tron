@@ -1,36 +1,23 @@
 package fr.li212.codingame.tron.adapters.grid;
 
 import fr.li212.codingame.tron.domain.grid.port.Cell;
-import fr.li212.codingame.tron.infrastructure.astar.CellWithHeuristic;
+import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
 import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintableVoronoiCell;
 
 import java.util.Objects;
 
-public class SquareCell implements Cell, CellWithHeuristic, VoronoiCell, PrintableVoronoiCell {
+public class SquareCell implements Cell, VoronoiCell, PrintableVoronoiCell {
     private final SquareCoordinate coordinate;
-    private final boolean isAccessible;
+    private final PlayerIdentifier playerOnCell;
 
-    public SquareCell(final SquareCoordinate coordinate, final boolean isAccessible) {
-        this.isAccessible = isAccessible;
+    public SquareCell(final SquareCoordinate coordinate, final PlayerIdentifier playerOnCell) {
+        this.playerOnCell = playerOnCell;
         this.coordinate = coordinate;
     }
 
     public SquareCoordinate getCoordinate() {
         return coordinate;
-    }
-
-    @Override
-    public int getHeuristic(final CellWithHeuristic goal) {
-        if (!(goal instanceof SquareCell)) {
-            throw new IllegalStateException("Only Square cell are allowed in this implementation");
-        }
-        return this.coordinate.distance(((SquareCell) goal).getCoordinate());
-    }
-
-    @Override
-    public int getPriceToGo() {
-        return 1;
     }
 
     @Override
@@ -45,12 +32,16 @@ public class SquareCell implements Cell, CellWithHeuristic, VoronoiCell, Printab
 
     @Override
     public boolean isAccessible() {
-        return this.isAccessible;
+        return this.playerOnCell == null;
     }
 
     @Override
     public boolean isVoronoiEligible(final int reductionFactor) {
-        return this.getX() % reductionFactor/2 == 0 && this.getY() % reductionFactor/2 == 0;
+        return (this.getX() + this.getY()) % reductionFactor == 0;
+    }
+
+    public PlayerIdentifier getPlayerOnCell() {
+        return playerOnCell;
     }
 
     @Override
@@ -70,7 +61,7 @@ public class SquareCell implements Cell, CellWithHeuristic, VoronoiCell, Printab
     public String toString() {
         return "SquareCell{" +
                 "coordinate=" + coordinate +
-                ", isAccessible=" + isAccessible +
+                ", playerOnCell=" + playerOnCell +
                 '}';
     }
 }

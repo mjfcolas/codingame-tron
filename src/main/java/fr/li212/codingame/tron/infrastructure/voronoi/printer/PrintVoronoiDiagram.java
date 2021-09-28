@@ -3,18 +3,19 @@ package fr.li212.codingame.tron.infrastructure.voronoi.printer;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiDiagram;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGerm;
+import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGrid;
 
 import java.util.Collections;
 import java.util.Set;
 
 public class PrintVoronoiDiagram {
 
-    public static void print(final VoronoiDiagram voronoiDiagram) {
-        final int maxWidth = voronoiDiagram.getVoronoiSpaces().values().stream()
-                .flatMapToInt(voronoiCells -> voronoiCells.stream().mapToInt(cell -> ((PrintableVoronoiCell) cell).getX()))
+    public static void print(final VoronoiGrid grid, final VoronoiDiagram voronoiDiagram) {
+        final int maxWidth = grid.getVoronoiCells().stream()
+                .mapToInt(cell -> ((PrintableVoronoiCell) cell).getX())
                 .max().orElse(0);
-        final int maxHeight = voronoiDiagram.getVoronoiSpaces().values().stream()
-                .flatMapToInt(voronoiCells -> voronoiCells.stream().mapToInt(cell -> ((PrintableVoronoiCell) cell).getY()))
+        final int maxHeight = grid.getVoronoiCells().stream()
+                .mapToInt(cell -> ((PrintableVoronoiCell) cell).getY())
                 .max().orElse(0);
         final String oneLine = String.join("", Collections.nCopies(maxWidth + 1, "X")) + "\n";
         final StringBuilder builder = new StringBuilder(String.join("", Collections.nCopies(maxHeight + 1, oneLine)));

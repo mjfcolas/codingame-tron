@@ -1,9 +1,12 @@
 package fr.li212.codingame.tron.infrastructure.voronoi.dummy;
 
+import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGrid;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,8 +22,8 @@ public class DummyGrid implements VoronoiGrid {
     }
 
     @Override
-    public int distance(final VoronoiCell start, final VoronoiCell end) {
-        return ((DummyCell) start).distance((DummyCell) end);
+    public List<Coordinate> path(final VoronoiCell start, final VoronoiCell end) {
+        return Arrays.asList(start.getCoordinate(), end.getCoordinate());
     }
 
     @Override

@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 public class AugmentedBasicSquareGrid implements AugmentedGrid {
 
     private final int voronoiReductionFactor;
-    private final BasicSquareAStarGrid underlyingGrid;
+    private final BasicSquareGrid underlyingGrid;
     private final VoronoiDiagram voronoiDiagram;
 
     public AugmentedBasicSquareGrid(
             final VoronoiDiagramProvider voronoiDiagramProvider,
-            final BasicSquareAStarGrid underlyingGrid,
+            final BasicSquareGrid underlyingGrid,
             final Collection<PlayerContext> playerContexts,
             final int voronoiReductionFactor) {
         this.voronoiReductionFactor = voronoiReductionFactor;
@@ -32,13 +32,8 @@ public class AugmentedBasicSquareGrid implements AugmentedGrid {
     }
 
     @Override
-    public Grid getUnderlyingGrid() {
-        return this.underlyingGrid;
-    }
-
-    @Override
     public float voronoiScore(final PlayerContext playerContext) {
-        return (float) numberOfVoronoiCellsForPlayer(playerContext) / voronoiReductionFactor;
+        return (float) numberOfVoronoiCellsForPlayer(playerContext) * voronoiReductionFactor;
     }
 
     private int numberOfVoronoiCellsForPlayer(final PlayerContext playerContext) {

@@ -1,5 +1,7 @@
 package fr.li212.codingame.tron.infrastructure.voronoi.dummy;
 
+import fr.li212.codingame.tron.adapters.grid.SquareCoordinate;
+import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
 import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintableVoronoiCell;
 
@@ -36,5 +38,10 @@ public class DummyCell implements VoronoiCell, PrintableVoronoiCell {
     @Override
     public boolean isVoronoiEligible(final int reductionFactor) {
         return true;
+    }
+
+    @Override
+    public Coordinate getCoordinate() {
+        return new SquareCoordinate(x, y);
     }
 }
