@@ -6,7 +6,9 @@ import fr.li212.codingame.tron.domain.grid.port.Grid;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
 import fr.li212.codingame.tron.infrastructure.astar.AStarManhattanPathFinder;
+import fr.li212.codingame.tron.infrastructure.astar.DirectManhattanPathFinder;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
+import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGerm;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGrid;
 
 import java.util.*;
@@ -19,7 +21,7 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
     private final SquareCell[][] cells;
     private final Map<StartAndDestKey, List<Coordinate>> cachedPaths = new HashMap<>();
 
-    private final Map<Coordinate, List<Coordinate>> neighboursCache = new HashMap<>();
+    private final ArrayList[][] neighboursCache;
 
     static class StartAndDestKey {
         private final Coordinate start;
@@ -50,6 +52,7 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
             final int height) {
         this.width = width;
         this.height = height;
+        neighboursCache = new ArrayList[width][height];
         cells = new SquareCell[width][height];
         IntStream.range(0, width).boxed()
                 .forEach(x -> IntStream.range(0, height).boxed()
@@ -57,30 +60,54 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
     }
 
     public BasicSquareGrid(
+            final int width,
+            final int height,
+            final SquareCell[][] cells) {
+        this.width = width;
+        this.height = height;
+        neighboursCache = new ArrayList[width][height];
+        this.cells = cells;
+    }
+
+
+    public BasicSquareGrid(
             final BasicSquareGrid initialGrid,
             final Collection<PlayerContext> playerContexts) {
         this.width = initialGrid.getWidth();
         this.height = initialGrid.getHeight();
+        neighboursCache = new ArrayList[width][height];
         cells = new SquareCell[width][height];
+
+
+        final Set<PlayerIdentifier> eliminatedPlayers = playerContexts.stream()
+                .filter(PlayerContext::isEliminated)
+                .map(PlayerContext::getPlayerIdentifier)
+                .collect(Collectors.toSet());
+
         IntStream.range(0, width).boxed()
                 .forEach(x -> IntStream.range(0, height).boxed()
                         .forEach(y -> {
                             final SquareCell cell = initialGrid.getCells()[x][y];
-                            final Set<PlayerIdentifier> playerInGame = playerContexts.stream().map(PlayerContext::getPlayerIdentifier).collect(Collectors.toSet());
-                            final PlayerIdentifier playerAlreadyOnCell = cell.getPlayerOnCell() != null
-                                    && playerInGame.contains(cell.getPlayerOnCell()) ? cell.getPlayerOnCell() : null;
-                            final PlayerIdentifier newPlayerOnCell = playerContexts.stream()
-                                    .filter(playerContext -> playerContext.getStartCoordinate().equals(cell.getCoordinate()) || playerContext.getCurrentCoordinate().equals(cell.getCoordinate()))
-                                    .map(PlayerContext::getPlayerIdentifier)
-                                    .findAny()
-                                    .orElse(null);
-                            this.cells[x][y] = new SquareCell(cell.getCoordinate(), playerAlreadyOnCell != null ? playerAlreadyOnCell : newPlayerOnCell);
+
+                            PlayerIdentifier playerOnCell;
+                            if (eliminatedPlayers.contains(cell.getPlayerOnCell())) {
+                                playerOnCell = null;
+                            } else if (cell.getPlayerOnCell() != null) {
+                                playerOnCell = cell.getPlayerOnCell();
+                            } else {
+                                final Optional<PlayerIdentifier> newPlayerOnCell = playerContexts.stream()
+                                        .filter(playerContext -> playerContext.getStartCoordinate().equals(cell.getCoordinate()) || playerContext.getCurrentCoordinate().equals(cell.getCoordinate()))
+                                        .map(PlayerContext::getPlayerIdentifier)
+                                        .findAny();
+                                playerOnCell = newPlayerOnCell.orElse(null);
+                            }
+                            this.cells[x][y] = new SquareCell(cell.getCoordinate(), playerOnCell);
                         }));
     }
 
     @Override
     public Cell getCell(final Coordinate coordinate) {
-        if(coordinate.getX() < 0 || coordinate.getX() >= width || coordinate.getY() < 0 || coordinate.getY() >= height){
+        if (coordinate.getX() < 0 || coordinate.getX() >= width || coordinate.getY() < 0 || coordinate.getY() >= height) {
             return null;
         }
         return cells[coordinate.getX()][coordinate.getY()];
@@ -97,42 +124,54 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
         if (cachedPaths.containsKey(key)) {
             return cachedPaths.get(key);
         }
-
-        final List<Coordinate> path = AStarManhattanPathFinder.getNew().findPath(this, ((SquareCell) start).getCoordinate(), ((SquareCell) end).getCoordinate());
+        List<Coordinate> path;
+        try {
+            path = this.directPath((SquareCell) start, (SquareCell) end);
+        } catch (final IllegalStateException e) {
+            path = this.aStarPath((SquareCell) start, (SquareCell) end);
+        }
 
         cachedPaths.put(key, path);
         return path;
     }
 
-    public List<Coordinate> getNeighbours(final Coordinate coordinate) {
-        if(neighboursCache.containsKey(coordinate)){
-            return neighboursCache.get(coordinate);
-        }
-        final List<Coordinate> result = new ArrayList<>(4);
-        if (coordinate.getX() - 1 >= 0) {
-            if (cells[coordinate.getX() - 1][coordinate.getY()].isAccessible()) {
-                result.add(cells[coordinate.getX() - 1][coordinate.getY()].getCoordinate());
-            }
-        }
-        if (coordinate.getX() + 1 < width) {
-            if (cells[coordinate.getX() + 1][coordinate.getY()].isAccessible()) {
-                result.add(cells[coordinate.getX() + 1][coordinate.getY()].getCoordinate());
-            }
-        }
-        if (coordinate.getY() - 1 >= 0) {
-            if (cells[coordinate.getX()][coordinate.getY() - 1].isAccessible()) {
-                result.add(cells[coordinate.getX()][coordinate.getY() - 1].getCoordinate());
-            }
-        }
-        if (coordinate.getY() + 1 < height) {
-            if (cells[coordinate.getX()][coordinate.getY() + 1].isAccessible()) {
-                result.add(cells[coordinate.getX()][coordinate.getY() + 1].getCoordinate());
-            }
-        }
-        neighboursCache.put(coordinate, result);
-        return result;
+    private List<Coordinate> directPath(final SquareCell start, final SquareCell end) {
+        return DirectManhattanPathFinder.getNew().findPath(this.getCells(), start.getCoordinate(), end.getCoordinate());
     }
 
+    private List<Coordinate> aStarPath(final SquareCell start, final SquareCell end) {
+        return AStarManhattanPathFinder.getNew().findPath(this, start.getCoordinate(), end.getCoordinate());
+    }
+
+    public List<Coordinate> getNeighbours(final Coordinate coordinate) {
+
+        if (neighboursCache[coordinate.getX()][coordinate.getY()] == null) {
+            final ArrayList<Coordinate> result = new ArrayList<>(4);
+            if (coordinate.getX() - 1 >= 0) {
+                if (cells[coordinate.getX() - 1][coordinate.getY()].isAccessible()) {
+                    result.add(cells[coordinate.getX() - 1][coordinate.getY()].getCoordinate());
+                }
+            }
+            if (coordinate.getX() + 1 < width) {
+                if (cells[coordinate.getX() + 1][coordinate.getY()].isAccessible()) {
+                    result.add(cells[coordinate.getX() + 1][coordinate.getY()].getCoordinate());
+                }
+            }
+            if (coordinate.getY() - 1 >= 0) {
+                if (cells[coordinate.getX()][coordinate.getY() - 1].isAccessible()) {
+                    result.add(cells[coordinate.getX()][coordinate.getY() - 1].getCoordinate());
+                }
+            }
+            if (coordinate.getY() + 1 < height) {
+                if (cells[coordinate.getX()][coordinate.getY() + 1].isAccessible()) {
+                    result.add(cells[coordinate.getX()][coordinate.getY() + 1].getCoordinate());
+                }
+            }
+            neighboursCache[coordinate.getX()][coordinate.getY()] = result;
+            return result;
+        }
+        return neighboursCache[coordinate.getX()][coordinate.getY()];
+    }
 
     @Override
     public Collection<VoronoiCell> getVoronoiCells() {
@@ -146,6 +185,22 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
         }
         return result;
     }
+
+    @Override
+    public Collection<VoronoiCell> getVoronoiCellsAccessibleFromGerm(final VoronoiGerm germ) {
+        final Set<Coordinate> accessibleCoordinates = new HashSet<>(width * height);
+        Stack<Coordinate> workStack = new Stack<>();
+        final Coordinate startCoordinate = germ.getCell().getCoordinate();
+        workStack.push(startCoordinate);
+        while (!workStack.isEmpty()) {
+            Coordinate currentCoordinate = workStack.pop();
+            Collection<Coordinate> neighbours = this.getNeighbours(currentCoordinate).stream().filter(coordinate -> !accessibleCoordinates.contains(coordinate)).collect(Collectors.toSet());
+            accessibleCoordinates.addAll(neighbours);
+            neighbours.forEach(workStack::push);
+        }
+        return accessibleCoordinates.stream().map(coordinate -> this.cells[coordinate.getX()][coordinate.getY()]).collect(Collectors.toList());
+    }
+
 
     public SquareCell[][] getCells() {
         return cells;

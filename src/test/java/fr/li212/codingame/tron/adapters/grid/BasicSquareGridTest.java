@@ -26,21 +26,25 @@ public class BasicSquareGridTest {
             new PlayerIdentifier(1),
             P1_INITIAL_COORDINATE,
             P1_FIRST_CURRENT_COORDINATE,
-            true);
+            true,
+            false);
     private final static PlayerContext P1_SECOND_PLAYER_CONTEXT = new PlayerContext(
             new PlayerIdentifier(1),
             P1_INITIAL_COORDINATE,
             P1_SECOND_CURRENT_COORDINATE,
-            true);
+            true,
+            false);
     private final static PlayerContext P2_FIRST_PLAYER_CONTEXT = new PlayerContext(
             new PlayerIdentifier(2),
             P2_INITIAL_COORDINATE,
             P2_FIRST_CURRENT_COORDINATE,
+            false,
             false);
     private final static PlayerContext P2_SECOND_PLAYER_CONTEXT = new PlayerContext(
             new PlayerIdentifier(2),
             P2_INITIAL_COORDINATE,
             P2_SECOND_CURRENT_COORDINATE,
+            false,
             false);
 
     @Test

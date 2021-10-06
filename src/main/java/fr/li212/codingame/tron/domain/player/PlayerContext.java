@@ -11,16 +11,19 @@ public class PlayerContext {
     private final Coordinate startCoordinate;
     private final Coordinate currentCoordinate;
     private final boolean isControlledPlayerContext;
+    private final boolean eliminated;
 
     public PlayerContext(
             final PlayerIdentifier playerIdentifier,
             final Coordinate startCoordinate,
             final Coordinate currentCoordinate,
-            final boolean isControlledPlayerContext) {
+            final boolean isControlledPlayerContext,
+            final boolean eliminated) {
         this.playerIdentifier = playerIdentifier;
         this.startCoordinate = startCoordinate;
         this.currentCoordinate = currentCoordinate;
         this.isControlledPlayerContext = isControlledPlayerContext;
+        this.eliminated = eliminated;
     }
 
     public static Collection<PlayerContext> predictAllPlayerContextsWithControlledPlayerMove(final Collection<PlayerContext> initialPlayerContexts, final Move moveToPredict){
@@ -30,7 +33,8 @@ public class PlayerContext {
                         playerContext.getPlayerIdentifier(),
                         playerContext.getStartCoordinate(),
                         playerContext.currentCoordinate.adjacentCoordinate(moveToPredict),
-                        playerContext.isControlledPlayerContext
+                        playerContext.isControlledPlayerContext,
+                        playerContext.isEliminated()
                 );
             }
             return playerContext;
@@ -42,7 +46,8 @@ public class PlayerContext {
                 playerContext.getPlayerIdentifier(),
                 playerContext.getStartCoordinate(),
                 playerContext.currentCoordinate.adjacentCoordinate(moveToPredict),
-                playerContext.isControlledPlayerContext
+                playerContext.isControlledPlayerContext,
+                playerContext.isEliminated()
         );
     }
 
@@ -52,6 +57,10 @@ public class PlayerContext {
 
     public Coordinate getCurrentCoordinate() {
         return currentCoordinate;
+    }
+
+    public boolean isEliminated() {
+        return eliminated;
     }
 
     public boolean isControlledPlayerContext() {

@@ -2,6 +2,7 @@ package fr.li212.codingame.tron.infrastructure.voronoi.dummy;
 
 import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
+import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGerm;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGrid;
 
 import java.util.Arrays;
@@ -28,6 +29,11 @@ public class DummyGrid implements VoronoiGrid {
 
     @Override
     public Collection<VoronoiCell> getVoronoiCells() {
+        return this.voronoiCells;
+    }
+
+    @Override
+    public Collection<VoronoiCell> getVoronoiCellsAccessibleFromGerm(final VoronoiGerm germ) {
         return this.voronoiCells;
     }
 }

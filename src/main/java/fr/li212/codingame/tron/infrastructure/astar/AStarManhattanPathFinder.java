@@ -6,7 +6,6 @@ import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 
 import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.stream.Collectors;
 
 public class AStarManhattanPathFinder {
 
@@ -20,7 +19,7 @@ public class AStarManhattanPathFinder {
         final AStarNode[][] copiedGrid = new AStarNode[grid.length][grid[0].length];
 
         for (int x = 0; x < grid.length; x++) {
-            for(int y = 0; y < grid[x].length; y++){
+            for (int y = 0; y < grid[x].length; y++) {
                 copiedGrid[x][y] = new AStarNode(grid[x][y].getCoordinate(), goal);
             }
         }
@@ -29,7 +28,6 @@ public class AStarManhattanPathFinder {
         AStarNode goalNode = copiedGrid[goal.getX()][goal.getY()];
 
         final Queue<AStarNode> openSet = new PriorityBlockingQueue<>();
-        //final Map<AStarNode, AStarNode> closedMap = new HashMap<>();
 
         startNode.setDistanceFromStartToNode(0);
         openSet.add(startNode);
@@ -54,21 +52,22 @@ public class AStarManhattanPathFinder {
         throw new IllegalStateException("No path found");
     }
 
-    private List<Coordinate> computePath(final AStarNode startNode) {
-        final List<AStarNode> path = new ArrayList<>();
-        path.add(startNode);
-        AStarNode currentNode = startNode;
+    private List<Coordinate> computePath(final AStarNode endNode) {
+        final List<Coordinate> path = new ArrayList<>();
+        path.add(endNode.getUnderlyingCoordinate());
+        AStarNode currentNode = endNode;
         while (currentNode.getPredecessor() != null) {
             currentNode = currentNode.getPredecessor();
-            path.add(currentNode);
+            path.add(currentNode.getUnderlyingCoordinate());
         }
-        return path.stream().map(AStarNode::getUnderlyingCoordinate).collect(Collectors.toList());
+        Collections.reverse(path);
+        return path;
     }
 
-    private List<AStarNode> getNeighbours(final AStarNode currentNode, final BasicSquareGrid grid, final AStarNode[][] copiedGrid){
+    private List<AStarNode> getNeighbours(final AStarNode currentNode, final BasicSquareGrid grid, final AStarNode[][] copiedGrid) {
         final List<Coordinate> neighbours = grid.getNeighbours(currentNode.getUnderlyingCoordinate());
         List<AStarNode> result = new ArrayList<>(4);
-        for (Coordinate coordinate: neighbours) {
+        for (Coordinate coordinate : neighbours) {
             result.add(copiedGrid[coordinate.getX()][coordinate.getY()]);
         }
         return result;

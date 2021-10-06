@@ -11,6 +11,7 @@ import fr.li212.codingame.tron.domain.port.OutputTurn;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiDiagramProvider;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class Player {
 
@@ -31,7 +32,7 @@ public class Player {
             final PlayTurn playTurn = new PlayTurn(
                     AUGMENTED_BASIC_SQUARE_GRID_PROVIDER,
                     currentGrid,
-                    playerContexts,
+                    playerContexts.stream().filter(playerContext -> !playerContext.isEliminated()).collect(Collectors.toSet()),
                     OUTPUT_TURN);
             playTurn.playMove();
             System.err.println("TOTAL TIME: " + (System.currentTimeMillis() - startTime));

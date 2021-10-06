@@ -21,13 +21,12 @@ public class VoronoiDiagramProvider {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             final StartAndDestKey that = (StartAndDestKey) o;
-            return Objects.equals(start, that.start) && Objects.equals(end, that.end)
-                    || Objects.equals(start, that.end) && Objects.equals(end, that.start);
+            return start.equals(that.start) && end.equals(that.end);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(start, end) + Objects.hash(end, start);
+            return Objects.hash(start, end);
         }
     }
 
@@ -41,7 +40,7 @@ public class VoronoiDiagramProvider {
             if (!distancesByGerm.containsKey(germ)) {
                 distancesByGerm.put(germ, new HashSet<>());
             }
-            for (VoronoiCell cell : grid.getVoronoiCells()) {
+            for (VoronoiCell cell : grid.getVoronoiCellsAccessibleFromGerm(germ)) {
                 if (!cell.isVoronoiEligible(reductionFactor)) {
                     continue;
                 }
@@ -55,17 +54,27 @@ public class VoronoiDiagramProvider {
                     try {
                         final List<Coordinate> path = grid.path(germ.getCell(), cell);
                         final int maxPathSize = path.size();
-                        for (int positionInPath = maxPathSize - 1; positionInPath >= 0; positionInPath--) {
+                        for (int positionInPath = 0; positionInPath < maxPathSize; positionInPath++) {
                             final StartAndDestKey currentDistanceKey = new StartAndDestKey(
-                                    path.get(maxPathSize - 1), path.get(positionInPath)
+                                    path.get(0), path.get(positionInPath)
                             );
-                            cachedDistances.put(currentDistanceKey, maxPathSize - positionInPath);
+                            cachedDistances.put(currentDistanceKey, positionInPath);
                         }
                     } catch (final IllegalStateException e) {
                         cachedDistances.put(distanceCacheKey, Integer.MAX_VALUE);
                     }
                 }
                 final int distance = cachedDistances.get(distanceCacheKey);
+
+
+//                int distance;
+//                try {
+//                    final List<Coordinate> path = grid.path(germ.getCell(), cell);
+//                    distance = path.size() - 1;
+//                } catch (final IllegalStateException e) {
+//                    distance = Integer.MAX_VALUE;
+//                }
+//
                 final VoronoiCellWithDistance cellWithDistance = new VoronoiCellWithDistance(germ, cell, distance);
                 distancesByGerm.get(germ)
                         .add(cellWithDistance);
@@ -97,7 +106,7 @@ public class VoronoiDiagramProvider {
         }
 
         final VoronoiDiagram result = new VoronoiDiagram(diagram);
-        //PrintVoronoiDiagram.print(grid, result);
+        PrintVoronoiDiagram.print(grid, result);
         return result;
     }
 }

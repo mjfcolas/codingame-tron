@@ -25,8 +25,8 @@ class PlayTurnTest {
 
     private static final BasicSquareGrid initialGrid = new BasicSquareGrid(GlobalParameters.GRID_WIDTH, GlobalParameters.GRID_HEIGHT);
 
-    private final static SquareCoordinate P1_START = new SquareCoordinate(7, 18);
-    private final static SquareCoordinate P2_START = new SquareCoordinate(20, 15);
+    private final static SquareCoordinate P1_START = new SquareCoordinate(18, 13);
+    private final static SquareCoordinate P2_START = new SquareCoordinate(13, 18);
     private final static SquareCoordinate P3_START = new SquareCoordinate(27, 13);
 
 
@@ -35,20 +35,23 @@ class PlayTurnTest {
                     new PlayerIdentifier(0),
                     P1_START,
                     P1_START,
-                    true
+                    true,
+                    false
             ),
             new PlayerContext(
                     new PlayerIdentifier(1),
                     P2_START,
                     P2_START,
-                    false
-            ),
-            new PlayerContext(
-                    new PlayerIdentifier(2),
-                    P3_START,
-                    P3_START,
+                    false,
                     false
             )
+//            ),
+//            new PlayerContext(
+//                    new PlayerIdentifier(2),
+//                    P3_START,
+//                    P3_START,
+//                    false
+//            )
     ));
 
     public static void main(String[] args)  {
