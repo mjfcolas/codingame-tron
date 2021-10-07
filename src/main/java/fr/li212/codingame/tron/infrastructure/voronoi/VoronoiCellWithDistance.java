@@ -1,6 +1,6 @@
 package fr.li212.codingame.tron.infrastructure.voronoi;
 
-public class VoronoiCellWithDistance {
+public class VoronoiCellWithDistance implements Comparable<VoronoiCellWithDistance> {
     private final VoronoiGerm germ;
     private final VoronoiCell cell;
     private final int distance;
@@ -20,6 +20,15 @@ public class VoronoiCellWithDistance {
 
     public VoronoiCell getCell() {
         return cell;
+    }
+
+    public VoronoiGerm getGerm() {
+        return germ;
+    }
+
+    @Override
+    public int compareTo(final VoronoiCellWithDistance toCompare) {
+        return Integer.compare(this.distance, toCompare.distance);
     }
 
     @Override

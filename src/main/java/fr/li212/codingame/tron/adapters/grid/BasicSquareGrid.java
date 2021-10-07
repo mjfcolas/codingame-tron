@@ -194,9 +194,14 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
         workStack.push(startCoordinate);
         while (!workStack.isEmpty()) {
             Coordinate currentCoordinate = workStack.pop();
-            Collection<Coordinate> neighbours = this.getNeighbours(currentCoordinate).stream().filter(coordinate -> !accessibleCoordinates.contains(coordinate)).collect(Collectors.toSet());
-            accessibleCoordinates.addAll(neighbours);
-            neighbours.forEach(workStack::push);
+            Collection<Coordinate> neighbours = this.getNeighbours(currentCoordinate);
+            neighbours.forEach(coordinate -> {
+                if(!accessibleCoordinates.contains(coordinate)){
+                    accessibleCoordinates.add(coordinate);
+                    workStack.push(coordinate);
+                }
+            });
+
         }
         return accessibleCoordinates.stream().map(coordinate -> this.cells[coordinate.getX()][coordinate.getY()]).collect(Collectors.toList());
     }

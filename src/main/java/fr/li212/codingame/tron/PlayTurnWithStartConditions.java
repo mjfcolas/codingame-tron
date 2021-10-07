@@ -24,25 +24,25 @@ class PlayTurnWithStartConditions {
 
 
     private static final String START_GRID =
-                    "                              \n" +
-                    "                              \n" +
-                    "                              \n" +
-                    "                              \n" +
-                    "   2                          \n" +
-                    "   X        XX                \n" +
-                    "   X        X                 \n" +
-                    "   X        X                 \n" +
-                    "   X        X                 \n" +
-                    "   X        X                 \n" +
-                    "   XXXXXXXX1X3                \n" +
                     "   X                          \n" +
+                    "   X                          \n" +
+                    "   X                          \n" +
+                    "   X                          \n" +
+                    "   XX                         \n" +
+                    "    XX                        \n" +
+                    "     XX                       \n" +
+                    "      X3                      \n" +
                     "                              \n" +
                     "                              \n" +
-                    "                              \n" +
-                    "                              \n" +
-                    "                              \n" +
-                    "                              \n" +
-                    "                              \n" +
+                    "       2X                     \n" +
+                    "        XX                    \n" +
+                    "         XX                   \n" +
+                    "          X                   \n" +
+                    "          X                   \n" +
+                    "          X                   \n" +
+                    "          X     1X            \n" +
+                    "          X      XX           \n" +
+                    "          X       XXXXXX      \n" +
                     "                              ";
 
     public static void main(String[] args) {
