@@ -20,7 +20,7 @@ public class AugmentedBasicSquareGrid implements AugmentedGrid {
             final VoronoiDiagramProvider voronoiDiagramProvider,
             final BasicSquareGrid underlyingGrid,
             final Collection<PlayerContext> playerContexts,
-            final int voronoiReductionFactor) {
+            final int voronoiReductionFactor) throws InterruptedException {
         this.voronoiReductionFactor = voronoiReductionFactor;
         this.underlyingGrid = underlyingGrid;
         this.voronoiDiagram = voronoiDiagramProvider

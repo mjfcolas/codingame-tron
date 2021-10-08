@@ -54,7 +54,7 @@ class PlayTurnTest {
 //            )
     ));
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) throws InterruptedException {
         final long startTime = System.currentTimeMillis();
         final BasicSquareGrid currentGrid = new BasicSquareGrid(initialGrid, PLAYER_CONTEXTS);
         final PlayTurn playTurn = new PlayTurn(

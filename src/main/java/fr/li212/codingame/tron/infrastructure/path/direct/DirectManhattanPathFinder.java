@@ -1,17 +1,14 @@
-package fr.li212.codingame.tron.infrastructure.astar;
+package fr.li212.codingame.tron.infrastructure.path.direct;
 
 import fr.li212.codingame.tron.domain.grid.port.Cell;
 import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+import fr.li212.codingame.tron.infrastructure.path.Path;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DirectManhattanPathFinder {
-    public static DirectManhattanPathFinder getNew() {
-        return new DirectManhattanPathFinder();
-    }
-
-    public List<Coordinate> findPath(final Cell[][] grid, final Coordinate start, final Coordinate goal) {
+    public Path findPath(final Cell[][] grid, final Coordinate start, final Coordinate goal) {
 
         Coordinate currentCoordinate = start;
 
@@ -37,10 +34,10 @@ public class DirectManhattanPathFinder {
                     continue;
                 }
             }
-            throw new IllegalStateException("No direct path found");
+            return new Path(null, false);
 
         }
 
-        return path;
+        return new Path(path, true);
     }
 }

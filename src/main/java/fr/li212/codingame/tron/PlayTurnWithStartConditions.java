@@ -24,28 +24,28 @@ class PlayTurnWithStartConditions {
 
 
     private static final String START_GRID =
-                    "   X                          \n" +
-                    "   X                          \n" +
-                    "   X                          \n" +
-                    "   X                          \n" +
-                    "   XX                         \n" +
-                    "    XX                        \n" +
-                    "     XX                       \n" +
-                    "      X3                      \n" +
-                    "                              \n" +
-                    "                              \n" +
-                    "       2X                     \n" +
-                    "        XX                    \n" +
-                    "         XX                   \n" +
-                    "          X                   \n" +
-                    "          X                   \n" +
-                    "          X                   \n" +
-                    "          X     1X            \n" +
-                    "          X      XX           \n" +
-                    "          X       XXXXXX      \n" +
-                    "                              ";
+                            "                              \n" +
+                            "                              \n" +
+                            "                              \n" +
+                            "  XX                          \n" +
+                            "   XX                         \n" +
+                            "    XX                        \n" +
+                            "     XX                       \n" +
+                            "      2                       \n" +
+                            "              1               \n" +
+                            "              X               \n" +
+                            "              X               \n" +
+                            "              X               \n" +
+                            "              X X             \n" +
+                            "              XXX             \n" +
+                            "             X3               \n" +
+                            "             XX               \n" +
+                            "              XX              \n" +
+                            "               X              \n" +
+                            "               X              \n" +
+                            "               X              ";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         final SquareCell[][] initialCells = new SquareCell[GlobalParameters.GRID_WIDTH][GlobalParameters.GRID_HEIGHT];
         final List<PlayerContext> playerContexts = new ArrayList<>();

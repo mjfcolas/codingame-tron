@@ -1,28 +1,18 @@
-package fr.li212.codingame.tron.infrastructure.astar;
+package fr.li212.codingame.tron.infrastructure.path.astar;
 
 import fr.li212.codingame.tron.adapters.grid.BasicSquareGrid;
 import fr.li212.codingame.tron.domain.grid.port.Cell;
 import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+import fr.li212.codingame.tron.infrastructure.path.Path;
 
 import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class AStarManhattanPathFinder {
 
-    public static AStarManhattanPathFinder getNew() {
-        return new AStarManhattanPathFinder();
-    }
+    public Path findPath(final BasicSquareGrid gridContainer, final Coordinate start, final Coordinate goal) {
 
-    public List<Coordinate> findPath(final BasicSquareGrid gridContainer, final Coordinate start, final Coordinate goal) {
-
-        final Cell[][] grid = gridContainer.getCells();
-        final AStarNode[][] copiedGrid = new AStarNode[grid.length][grid[0].length];
-
-        for (int x = 0; x < grid.length; x++) {
-            for (int y = 0; y < grid[x].length; y++) {
-                copiedGrid[x][y] = new AStarNode(grid[x][y].getCoordinate(), goal);
-            }
-        }
+        final AStarNode[][] copiedGrid = this.initialize(gridContainer, goal);
 
         AStarNode startNode = copiedGrid[start.getX()][start.getY()];
         AStarNode goalNode = copiedGrid[goal.getX()][goal.getY()];
@@ -39,20 +29,37 @@ public class AStarManhattanPathFinder {
             }
             final Collection<AStarNode> neighbours = this.getNeighbours(currentNode, gridContainer, copiedGrid);
             for (AStarNode neighbour : neighbours) {
-                final int predictedDistanceToStartNode = currentNode.getDistanceFromStartToNode() + 1;
-                if (!neighbour.isClosed() || (neighbour.getDistanceFromStartToNode() > predictedDistanceToStartNode)) {
-                    neighbour.setPredecessor(currentNode);
-                    neighbour.setDistanceFromStartToNode(predictedDistanceToStartNode);
-                    neighbour.setClosed();
-                    openSet.add(neighbour);
-                }
+                this.manageNeighbour(neighbour, currentNode, openSet);
             }
 
         }
-        throw new IllegalStateException("No path found");
+        return new Path(null, false);
     }
 
-    private List<Coordinate> computePath(final AStarNode endNode) {
+    private void manageNeighbour(final AStarNode neighbour, final AStarNode currentNode, final Queue<AStarNode> openSet) {
+        final int predictedDistanceToStartNode = currentNode.getDistanceFromStartToNode() + 1;
+        if (!neighbour.isClosed() || (neighbour.getDistanceFromStartToNode() > predictedDistanceToStartNode)) {
+            neighbour.setPredecessor(currentNode);
+            neighbour.setDistanceFromStartToNode(predictedDistanceToStartNode);
+            neighbour.setClosed();
+            openSet.add(neighbour);
+        }
+    }
+
+    private AStarNode[][] initialize(final BasicSquareGrid gridContainer, final Coordinate goal) {
+        final Cell[][] grid = gridContainer.getCells();
+        final AStarNode[][] copiedGrid = new AStarNode[grid.length][grid[0].length];
+        final int width = gridContainer.getWidth();
+        final int height = gridContainer.getHeight();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                copiedGrid[x][y] = new AStarNode(grid[x][y].getCoordinate(), goal);
+            }
+        }
+        return copiedGrid;
+    }
+
+    private Path computePath(final AStarNode endNode) {
         final List<Coordinate> path = new ArrayList<>();
         path.add(endNode.getUnderlyingCoordinate());
         AStarNode currentNode = endNode;
@@ -61,7 +68,7 @@ public class AStarManhattanPathFinder {
             path.add(currentNode.getUnderlyingCoordinate());
         }
         Collections.reverse(path);
-        return path;
+        return new Path(path, true);
     }
 
     private List<AStarNode> getNeighbours(final AStarNode currentNode, final BasicSquareGrid grid, final AStarNode[][] copiedGrid) {

@@ -7,6 +7,8 @@ public class OutputCodingameTurn implements OutputTurn {
 
     @Override
     public void play(final Move move) {
-        System.out.println(move);
+        synchronized (System.out) {
+            System.out.println(move);
+        }
     }
 }

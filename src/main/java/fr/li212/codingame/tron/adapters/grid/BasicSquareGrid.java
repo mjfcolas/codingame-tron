@@ -5,8 +5,9 @@ import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 import fr.li212.codingame.tron.domain.grid.port.Grid;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
-import fr.li212.codingame.tron.infrastructure.astar.AStarManhattanPathFinder;
-import fr.li212.codingame.tron.infrastructure.astar.DirectManhattanPathFinder;
+import fr.li212.codingame.tron.infrastructure.path.Path;
+import fr.li212.codingame.tron.infrastructure.path.astar.AStarManhattanPathFinder;
+import fr.li212.codingame.tron.infrastructure.path.direct.DirectManhattanPathFinder;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGerm;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGrid;
@@ -20,6 +21,8 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
     private final int height;
     private final SquareCell[][] cells;
     private final Map<StartAndDestKey, List<Coordinate>> cachedPaths = new HashMap<>();
+    private final AStarManhattanPathFinder aStarManhattanPathFinder = new AStarManhattanPathFinder();
+    private final DirectManhattanPathFinder directManhattanPathFinder = new DirectManhattanPathFinder();
 
     private final ArrayList[][] neighboursCache;
 
@@ -124,23 +127,21 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
         if (cachedPaths.containsKey(key)) {
             return cachedPaths.get(key);
         }
-        List<Coordinate> path;
-        try {
-            path = this.directPath((SquareCell) start, (SquareCell) end);
-        } catch (final IllegalStateException e) {
+        Path path;
+        path = this.directPath((SquareCell) start, (SquareCell) end);
+        if (!path.exists()) {
             path = this.aStarPath((SquareCell) start, (SquareCell) end);
         }
-
-        cachedPaths.put(key, path);
-        return path;
+        cachedPaths.put(key, path.getPath());
+        return path.getPath();
     }
 
-    private List<Coordinate> directPath(final SquareCell start, final SquareCell end) {
-        return DirectManhattanPathFinder.getNew().findPath(this.getCells(), start.getCoordinate(), end.getCoordinate());
+    private Path directPath(final SquareCell start, final SquareCell end) {
+        return directManhattanPathFinder.findPath(this.getCells(), start.getCoordinate(), end.getCoordinate());
     }
 
-    private List<Coordinate> aStarPath(final SquareCell start, final SquareCell end) {
-        return AStarManhattanPathFinder.getNew().findPath(this, start.getCoordinate(), end.getCoordinate());
+    private Path aStarPath(final SquareCell start, final SquareCell end) {
+        return aStarManhattanPathFinder.findPath(this, start.getCoordinate(), end.getCoordinate());
     }
 
     public List<Coordinate> getNeighbours(final Coordinate coordinate) {
@@ -195,15 +196,18 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
         while (!workStack.isEmpty()) {
             Coordinate currentCoordinate = workStack.pop();
             Collection<Coordinate> neighbours = this.getNeighbours(currentCoordinate);
-            neighbours.forEach(coordinate -> {
-                if(!accessibleCoordinates.contains(coordinate)){
+            for (Coordinate coordinate : neighbours) {
+                if (!accessibleCoordinates.contains(coordinate)) {
                     accessibleCoordinates.add(coordinate);
                     workStack.push(coordinate);
                 }
-            });
-
+            }
         }
-        return accessibleCoordinates.stream().map(coordinate -> this.cells[coordinate.getX()][coordinate.getY()]).collect(Collectors.toList());
+        final List<VoronoiCell> result = new ArrayList<>(width * height);
+        for (Coordinate coordinate : accessibleCoordinates) {
+            result.add(this.cells[coordinate.getX()][coordinate.getY()]);
+        }
+        return result;
     }
 
 

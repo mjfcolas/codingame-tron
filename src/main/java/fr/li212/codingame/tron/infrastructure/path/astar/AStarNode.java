@@ -1,4 +1,4 @@
-package fr.li212.codingame.tron.infrastructure.astar;
+package fr.li212.codingame.tron.infrastructure.path.astar;
 
 import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 

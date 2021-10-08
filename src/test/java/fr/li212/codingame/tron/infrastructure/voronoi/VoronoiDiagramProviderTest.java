@@ -27,7 +27,7 @@ class VoronoiDiagramProviderTest {
             "when getting voronoi diagram," +
             "then expected diagram is retrieved")
     @Test
-    void getDiagram() {
+    void getDiagram() throws InterruptedException {
         final VoronoiDiagramProvider provider = new VoronoiDiagramProvider();
         provider.get(GRID, GERMS, 1);
     }
