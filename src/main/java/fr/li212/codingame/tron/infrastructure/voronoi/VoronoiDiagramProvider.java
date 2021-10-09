@@ -3,7 +3,6 @@ package fr.li212.codingame.tron.infrastructure.voronoi;
 import fr.li212.codingame.tron.domain.grid.port.Cell;
 import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 import fr.li212.codingame.tron.domain.grid.port.Grid;
-import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintVoronoiDiagram;
 
 import java.util.*;
 
@@ -38,7 +37,7 @@ public class VoronoiDiagramProvider {
 
         this.getDistances(grid, germs, reductionFactor, distancesByCell);
         final VoronoiDiagram result = this.getDiagram(germs, distancesByCell);
-        PrintVoronoiDiagram.print(grid, result);
+        //PrintVoronoiDiagram.print(grid, result);
         return result;
     }
 

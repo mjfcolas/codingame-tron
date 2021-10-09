@@ -28,7 +28,7 @@ public class AStarManhattanPathFinder {
         AStarNode startNode = copiedGrid[start.getX()][start.getY()];
         AStarNode goalNode = copiedGrid[goal.getX()][goal.getY()];
 
-        final Queue<AStarNode> openSet = new PriorityBlockingQueue<>();
+        final Queue<AStarNode> openSet = new PriorityQueue<>();
 
         startNode.setDistanceFromStartToNode(0);
         openSet.add(startNode);

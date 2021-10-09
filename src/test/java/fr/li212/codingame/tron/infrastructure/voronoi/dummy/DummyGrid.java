@@ -41,6 +41,11 @@ public class DummyGrid implements Grid {
     }
 
     @Override
+    public List<Coordinate> getNeighbours(final Coordinate coordinate) {
+        return null;
+    }
+
+    @Override
     public Cell[][] getCells() {
         return this.cells;
     }

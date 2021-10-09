@@ -5,8 +5,8 @@ import fr.li212.codingame.tron.adapters.grid.BasicSquareGrid;
 import fr.li212.codingame.tron.adapters.grid.SquareCell;
 import fr.li212.codingame.tron.adapters.grid.SquareCoordinate;
 import fr.li212.codingame.tron.adapters.io.OutputCodingameTurn;
-import fr.li212.codingame.tron.domain.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.PlayTurn;
+import fr.li212.codingame.tron.domain.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
 import fr.li212.codingame.tron.domain.port.OutputTurn;
@@ -27,25 +27,25 @@ class PlayTurnWithStartConditions {
                     "                              \n" +
                     "                              \n" +
                     "                              \n" +
-                    "         0XXXX                \n" +
-                    "          XXXX                \n" +
-                    "                              \n" +
-                    "         2XXXXX               \n" +
-                    "              X               \n" +
-                    "              X         XXXXXX\n" +
-                    "              X 1XXXXXXXX     \n" +
-                    "                       XX     \n" +
-                    "                        3     \n" +
                     "                              \n" +
                     "                              \n" +
+                    "    X                         \n" +
+                    "    XX                        \n" +
+                    "     X                        \n" +
+                    "     XXXXXX  3                \n" +
+                    "          XX X  2X            \n" +
+                    "           XXX XXX  XXXXXXXXXX\n" +
+                    "               X1XXXX         \n" +
+                    "  X            X              \n" +
+                    "  XXX          X              \n" +
+                    "    XXXXXXXXXXXX              \n" +
+                    "    X                         \n" +
+                    "    X                         \n" +
+                    "    XXXXXXXXX0                \n" +
                     "                              \n" +
-                    "                              \n" +
-                    "                              \n" +
-                    "                              \n" +
-                    "                              \n" +
-                    "                              \n";
+                    "                              ";
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
         final SquareCell[][] initialCells = new SquareCell[GlobalParameters.GRID_WIDTH][GlobalParameters.GRID_HEIGHT];
         final List<PlayerContext> playerContexts = new ArrayList<>();

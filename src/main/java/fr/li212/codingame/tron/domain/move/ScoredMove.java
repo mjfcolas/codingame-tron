@@ -8,9 +8,11 @@ public class ScoredMove implements Comparable<ScoredMove> {
 
     public ScoredMove(
             final Move move,
-            final float voronoiScore) {
+            final float voronoiScore,
+            final int numberOfLibertiesAfter) {
         this.move = move;
-        this.score = (int)(voronoiScore * ScoreCoefficients.BEST_VORONOI.getCoefficient());
+        this.score = (int) (voronoiScore * ScoreCoefficients.BEST_VORONOI.getCoefficient())
+                + (numberOfLibertiesAfter * ScoreCoefficients.LEAST_NUMBER_OF_LIBERTIES.getCoefficient());
     }
 
     public Move getMove() {
