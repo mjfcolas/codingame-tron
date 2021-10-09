@@ -19,7 +19,7 @@ public class AugmentedBasicSquareGridProvider implements AugmentedGridProvider {
     }
 
     @Override
-    public AugmentedGrid get(final Grid grid, final Collection<PlayerContext> newPlayerContexts) throws InterruptedException {
+    public AugmentedGrid get(final Grid grid, final Collection<PlayerContext> newPlayerContexts){
         if (!(grid instanceof BasicSquareGrid)) {
             throw new IllegalStateException("Only Basic square grid are allowed in this implementation");
         }

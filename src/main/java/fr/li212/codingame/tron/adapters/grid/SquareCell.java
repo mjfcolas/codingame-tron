@@ -49,12 +49,12 @@ public class SquareCell implements Cell, VoronoiCell, PrintableVoronoiCell {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final SquareCell cell = (SquareCell) o;
-        return Objects.equals(coordinate, cell.coordinate);
+        return coordinate.equals(cell.coordinate);
     }
 
     @Override
     public int hashCode() {
-        return 17 * coordinate.getX() + 31 * coordinate.getY();
+        return coordinate.hashCode();
     }
 
     @Override

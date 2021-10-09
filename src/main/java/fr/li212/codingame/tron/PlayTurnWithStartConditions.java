@@ -24,26 +24,26 @@ class PlayTurnWithStartConditions {
 
 
     private static final String START_GRID =
-                            "                              \n" +
-                            "                              \n" +
-                            "                              \n" +
-                            "  XX                          \n" +
-                            "   XX                         \n" +
-                            "    XX                        \n" +
-                            "     XX                       \n" +
-                            "      2                       \n" +
-                            "              1               \n" +
-                            "              X               \n" +
-                            "              X               \n" +
-                            "              X               \n" +
-                            "              X X             \n" +
-                            "              XXX             \n" +
-                            "             X3               \n" +
-                            "             XX               \n" +
-                            "              XX              \n" +
-                            "               X              \n" +
-                            "               X              \n" +
-                            "               X              ";
+                    "                              \n" +
+                    "                              \n" +
+                    "                              \n" +
+                    "         0XXXX                \n" +
+                    "          XXXX                \n" +
+                    "                              \n" +
+                    "         2XXXXX               \n" +
+                    "              X               \n" +
+                    "              X         XXXXXX\n" +
+                    "              X 1XXXXXXXX     \n" +
+                    "                       XX     \n" +
+                    "                        3     \n" +
+                    "                              \n" +
+                    "                              \n" +
+                    "                              \n" +
+                    "                              \n" +
+                    "                              \n" +
+                    "                              \n" +
+                    "                              \n" +
+                    "                              \n";
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -60,7 +60,7 @@ class PlayTurnWithStartConditions {
                             new PlayerIdentifier(Integer.parseInt(charOnLine.toString())),
                             new SquareCoordinate(x, y),
                             new SquareCoordinate(x, y),
-                            charOnLine == '1',
+                            charOnLine == '0',
                             false
                     ));
                 }

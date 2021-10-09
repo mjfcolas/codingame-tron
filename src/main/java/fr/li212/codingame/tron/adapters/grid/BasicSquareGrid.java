@@ -21,7 +21,7 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
     private final int height;
     private final SquareCell[][] cells;
     private final Map<StartAndDestKey, List<Coordinate>> cachedPaths = new HashMap<>();
-    private final AStarManhattanPathFinder aStarManhattanPathFinder = new AStarManhattanPathFinder();
+    private final AStarManhattanPathFinder aStarManhattanPathFinder;
     private final DirectManhattanPathFinder directManhattanPathFinder = new DirectManhattanPathFinder();
 
     private final ArrayList[][] neighboursCache;
@@ -60,6 +60,7 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
         IntStream.range(0, width).boxed()
                 .forEach(x -> IntStream.range(0, height).boxed()
                         .forEach(y -> cells[x][y] = new SquareCell(new SquareCoordinate(x, y), null)));
+        aStarManhattanPathFinder = new AStarManhattanPathFinder(this);
     }
 
     public BasicSquareGrid(
@@ -70,6 +71,7 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
         this.height = height;
         neighboursCache = new ArrayList[width][height];
         this.cells = cells;
+        aStarManhattanPathFinder = new AStarManhattanPathFinder(this);
     }
 
 
@@ -106,6 +108,9 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
                             }
                             this.cells[x][y] = new SquareCell(cell.getCoordinate(), playerOnCell);
                         }));
+
+        aStarManhattanPathFinder = new AStarManhattanPathFinder(this);
+        //BasicSquareGridPrinter.print(this, playerContexts);
     }
 
     @Override
@@ -141,7 +146,7 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
     }
 
     private Path aStarPath(final SquareCell start, final SquareCell end) {
-        return aStarManhattanPathFinder.findPath(this, start.getCoordinate(), end.getCoordinate());
+        return aStarManhattanPathFinder.findPath(start.getCoordinate(), end.getCoordinate());
     }
 
     public List<Coordinate> getNeighbours(final Coordinate coordinate) {

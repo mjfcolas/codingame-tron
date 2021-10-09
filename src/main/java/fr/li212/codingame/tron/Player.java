@@ -24,22 +24,18 @@ public class Player {
     private static BasicSquareGrid currentGrid = new BasicSquareGrid(GlobalParameters.GRID_WIDTH, GlobalParameters.GRID_HEIGHT);
 
     public static void main(String[] args) {
-        try {
-            while (true) {
-                final long startTime = System.currentTimeMillis();
-                final Collection<PlayerContext> playerContexts = INPUT_TURN.get();
-                currentGrid = new BasicSquareGrid(currentGrid, playerContexts);
+        while (true) {
+            final long startTime = System.currentTimeMillis();
+            final Collection<PlayerContext> playerContexts = INPUT_TURN.get();
+            currentGrid = new BasicSquareGrid(currentGrid, playerContexts);
 
-                final PlayTurn playTurn = new PlayTurn(
-                        AUGMENTED_BASIC_SQUARE_GRID_PROVIDER,
-                        currentGrid,
-                        playerContexts.stream().filter(playerContext -> !playerContext.isEliminated()).collect(Collectors.toSet()),
-                        OUTPUT_TURN);
-                playTurn.playMove();
-                System.err.println("TOTAL TIME: " + (System.currentTimeMillis() - startTime));
-            }
-        }catch (InterruptedException ignored){
-            System.err.println("MAIN INTERRUPTION OF COMPUTATION");
+            final PlayTurn playTurn = new PlayTurn(
+                    AUGMENTED_BASIC_SQUARE_GRID_PROVIDER,
+                    currentGrid,
+                    playerContexts.stream().filter(playerContext -> !playerContext.isEliminated()).collect(Collectors.toSet()),
+                    OUTPUT_TURN);
+            playTurn.playMove();
+            System.err.println("TOTAL TIME: " + (System.currentTimeMillis() - startTime));
         }
     }
 }

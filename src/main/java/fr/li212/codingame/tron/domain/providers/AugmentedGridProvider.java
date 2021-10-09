@@ -7,5 +7,5 @@ import fr.li212.codingame.tron.domain.player.PlayerContext;
 import java.util.Collection;
 
 public interface AugmentedGridProvider {
-    AugmentedGrid get(final Grid grid, final Collection<PlayerContext> newPlayerContexts) throws InterruptedException;
+    AugmentedGrid get(final Grid grid, final Collection<PlayerContext> newPlayerContexts);
 }

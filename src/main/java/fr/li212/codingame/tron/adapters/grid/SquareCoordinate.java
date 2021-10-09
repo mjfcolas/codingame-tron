@@ -66,7 +66,7 @@ public class SquareCoordinate implements Coordinate {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return x + 397*y;
     }
 
     @Override

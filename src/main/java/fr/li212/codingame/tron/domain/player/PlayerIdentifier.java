@@ -17,6 +17,10 @@ public class PlayerIdentifier {
         return playerNumber == that.playerNumber;
     }
 
+    public int getPlayerNumber() {
+        return playerNumber;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(playerNumber);

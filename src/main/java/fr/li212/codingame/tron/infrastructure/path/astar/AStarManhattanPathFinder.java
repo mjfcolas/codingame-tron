@@ -9,10 +9,21 @@ import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class AStarManhattanPathFinder {
+    private final int width;
+    private final int height;
+    private final BasicSquareGrid gridContainer;
+    final AStarNode[][] copiedGrid;
 
-    public Path findPath(final BasicSquareGrid gridContainer, final Coordinate start, final Coordinate goal) {
+    public AStarManhattanPathFinder(final BasicSquareGrid gridContainer) {
+        this.gridContainer = gridContainer;
+        this.width = gridContainer.getWidth();
+        this.height = gridContainer.getHeight();
+        this.copiedGrid = initialize();
+    }
 
-        final AStarNode[][] copiedGrid = this.initialize(gridContainer, goal);
+    public Path findPath(final Coordinate start, final Coordinate goal) {
+
+        this.resetCopiedGrid(goal);
 
         AStarNode startNode = copiedGrid[start.getX()][start.getY()];
         AStarNode goalNode = copiedGrid[goal.getX()][goal.getY()];
@@ -27,7 +38,7 @@ public class AStarManhattanPathFinder {
             if (currentNode.equals(goalNode)) {
                 return computePath(currentNode);
             }
-            final Collection<AStarNode> neighbours = this.getNeighbours(currentNode, gridContainer, copiedGrid);
+            final Collection<AStarNode> neighbours = this.getNeighbours(currentNode);
             for (AStarNode neighbour : neighbours) {
                 this.manageNeighbour(neighbour, currentNode, openSet);
             }
@@ -46,14 +57,20 @@ public class AStarManhattanPathFinder {
         }
     }
 
-    private AStarNode[][] initialize(final BasicSquareGrid gridContainer, final Coordinate goal) {
-        final Cell[][] grid = gridContainer.getCells();
-        final AStarNode[][] copiedGrid = new AStarNode[grid.length][grid[0].length];
-        final int width = gridContainer.getWidth();
-        final int height = gridContainer.getHeight();
+    private void resetCopiedGrid(final Coordinate goal) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                copiedGrid[x][y] = new AStarNode(grid[x][y].getCoordinate(), goal);
+                copiedGrid[x][y].reset(Math.abs(x - goal.getX()) + Math.abs(y - goal.getY()));
+            }
+        }
+    }
+
+    private AStarNode[][] initialize() {
+        final Cell[][] grid = gridContainer.getCells();
+        final AStarNode[][] copiedGrid = new AStarNode[width][height];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                copiedGrid[x][y] = new AStarNode(grid[x][y].getCoordinate());
             }
         }
         return copiedGrid;
@@ -71,8 +88,8 @@ public class AStarManhattanPathFinder {
         return new Path(path, true);
     }
 
-    private List<AStarNode> getNeighbours(final AStarNode currentNode, final BasicSquareGrid grid, final AStarNode[][] copiedGrid) {
-        final List<Coordinate> neighbours = grid.getNeighbours(currentNode.getUnderlyingCoordinate());
+    private List<AStarNode> getNeighbours(final AStarNode currentNode) {
+        final List<Coordinate> neighbours = gridContainer.getNeighbours(currentNode.getUnderlyingCoordinate());
         List<AStarNode> result = new ArrayList<>(4);
         for (Coordinate coordinate : neighbours) {
             result.add(copiedGrid[coordinate.getX()][coordinate.getY()]);

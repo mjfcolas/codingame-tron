@@ -7,16 +7,21 @@ import java.util.Objects;
 public class AStarNode implements Comparable<AStarNode> {
 
     private final Coordinate underlyingCoordinate;
-    private final int underlyingNodeHeuristic;
+    private int underlyingNodeHeuristic;
     private AStarNode predecessor;
     private Integer distanceFromStartToNode = null;
     private boolean isClosed = false;
 
     public AStarNode(
-            final Coordinate underlyingCoordinate,
-            final Coordinate goal) {
+            final Coordinate underlyingCoordinate) {
         this.underlyingCoordinate = underlyingCoordinate;
-        this.underlyingNodeHeuristic = underlyingCoordinate.distance(goal);
+    }
+
+    public void reset(final int underlyingNodeHeuristic) {
+        this.underlyingNodeHeuristic = underlyingNodeHeuristic;
+        this.distanceFromStartToNode = null;
+        this.predecessor = null;
+        this.isClosed = false;
     }
 
     public int getHeuristic() {
@@ -25,6 +30,7 @@ public class AStarNode implements Comparable<AStarNode> {
         }
         return this.underlyingNodeHeuristic + distanceFromStartToNode;
     }
+
     public Integer getDistanceFromStartToNode() {
         return distanceFromStartToNode;
     }
