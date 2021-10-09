@@ -5,4 +5,5 @@ public interface Cell {
     int getX();
     int getY();
     Coordinate getCoordinate();
+    boolean isEligibleForComputation(final int reductionFactor);
 }

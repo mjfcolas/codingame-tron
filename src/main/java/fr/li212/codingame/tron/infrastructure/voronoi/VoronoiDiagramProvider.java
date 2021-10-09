@@ -1,6 +1,9 @@
 package fr.li212.codingame.tron.infrastructure.voronoi;
 
+import fr.li212.codingame.tron.domain.grid.port.Cell;
 import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+import fr.li212.codingame.tron.domain.grid.port.Grid;
+import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintVoronoiDiagram;
 
 import java.util.*;
 
@@ -29,38 +32,38 @@ public class VoronoiDiagramProvider {
         }
     }
 
-    public VoronoiDiagram get(final VoronoiGrid grid, final Collection<VoronoiGerm> germs, final int reductionFactor) {
+    public VoronoiDiagram get(final Grid grid, final Collection<Cell> germs, final int reductionFactor) {
 
-        final Map<VoronoiCell, Queue<VoronoiCellWithDistance>> distancesByCell = new HashMap<>();
+        final Map<Cell, Queue<CellWithDistance>> distancesByCell = new HashMap<>();
 
         this.getDistances(grid, germs, reductionFactor, distancesByCell);
         final VoronoiDiagram result = this.getDiagram(germs, distancesByCell);
-        //PrintVoronoiDiagram.print(grid, result);
+        PrintVoronoiDiagram.print(grid, result);
         return result;
     }
 
     private void getDistances(
-            final VoronoiGrid grid,
-            final Collection<VoronoiGerm> germs,
+            final Grid grid,
+            final Collection<Cell> germs,
             final int reductionFactor,
-            final Map<VoronoiCell, Queue<VoronoiCellWithDistance>> distancesByCell) {
+            final Map<Cell, Queue<CellWithDistance>> distancesByCell) {
         final Map<StartAndDestKey, Integer> cachedDistances = new HashMap<>();
 
-        for (VoronoiGerm germ : germs) {
-            final Collection<VoronoiCell> cellsAccessibleFromGerm = grid.getVoronoiCellsAccessibleFromGerm(germ);
-            for (VoronoiCell cell : cellsAccessibleFromGerm) {
-                if (!cell.isVoronoiEligible(reductionFactor)) {
+        for (Cell germ : germs) {
+            final Collection<Cell> cellsAccessibleFromGerm = grid.getAccessibleCellsFromStartingPoint(germ);
+            for (Cell cell : cellsAccessibleFromGerm) {
+                if (!cell.isEligibleForComputation(reductionFactor)) {
                     continue;
                 }
                 if (!distancesByCell.containsKey(cell)) {
                     distancesByCell.put(cell, new PriorityQueue<>());
                 }
                 final StartAndDestKey distanceCacheKey = new StartAndDestKey(
-                        germ.getCell().getCoordinate(), cell.getCoordinate()
+                        germ.getCoordinate(), cell.getCoordinate()
                 );
                 if (!cachedDistances.containsKey(distanceCacheKey)) {
                     try {
-                        final List<Coordinate> path = grid.path(germ.getCell(), cell);
+                        final List<Coordinate> path = grid.path(germ, cell);
                         final int maxPathSize = path.size();
                         for (int positionInPath = 0; positionInPath < maxPathSize; positionInPath++) {
                             final StartAndDestKey currentDistanceKey = new StartAndDestKey(
@@ -74,7 +77,7 @@ public class VoronoiDiagramProvider {
                 }
                 final Integer distance = cachedDistances.get(distanceCacheKey);
 
-                final VoronoiCellWithDistance cellWithDistance = new VoronoiCellWithDistance(germ, cell, distance);
+                final CellWithDistance cellWithDistance = new CellWithDistance(germ, cell, distance);
                 distancesByCell.get(cell)
                         .add(cellWithDistance);
             }
@@ -82,14 +85,14 @@ public class VoronoiDiagramProvider {
     }
 
     private VoronoiDiagram getDiagram(
-            final Collection<VoronoiGerm> germs,
-            final Map<VoronoiCell, Queue<VoronoiCellWithDistance>> distancesByCell) {
-        final Map<VoronoiGerm, Set<VoronoiCell>> diagram = new HashMap<>();
+            final Collection<Cell> germs,
+            final Map<Cell, Queue<CellWithDistance>> distancesByCell) {
+        final Map<Cell, Set<Cell>> diagram = new HashMap<>();
         germs.forEach(germ -> diagram.put(germ, new HashSet<>()));
 
-        for (Queue<VoronoiCellWithDistance> voronoiCellWithDistances : distancesByCell.values()) {
-            final VoronoiCellWithDistance minimumDistance = voronoiCellWithDistances.remove();
-            final VoronoiCellWithDistance secondMinimumDistance = voronoiCellWithDistances.isEmpty() ? null : voronoiCellWithDistances.remove();
+        for (Queue<CellWithDistance> cellWithDistances : distancesByCell.values()) {
+            final CellWithDistance minimumDistance = cellWithDistances.remove();
+            final CellWithDistance secondMinimumDistance = cellWithDistances.isEmpty() ? null : cellWithDistances.remove();
             if (secondMinimumDistance == null || minimumDistance.getDistance() < secondMinimumDistance.getDistance()) {
 
                 diagram.get(minimumDistance.getGerm()).add(minimumDistance.getCell());

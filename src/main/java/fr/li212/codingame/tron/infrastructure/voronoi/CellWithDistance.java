@@ -1,13 +1,15 @@
 package fr.li212.codingame.tron.infrastructure.voronoi;
 
-public class VoronoiCellWithDistance implements Comparable<VoronoiCellWithDistance> {
-    private final VoronoiGerm germ;
-    private final VoronoiCell cell;
+import fr.li212.codingame.tron.domain.grid.port.Cell;
+
+public class CellWithDistance implements Comparable<CellWithDistance> {
+    private final Cell germ;
+    private final Cell cell;
     private final int distance;
 
-    public VoronoiCellWithDistance(
-            final VoronoiGerm germ,
-            final VoronoiCell cell,
+    public CellWithDistance(
+            final Cell germ,
+            final Cell cell,
             final int distance) {
         this.germ = germ;
         this.cell = cell;
@@ -18,16 +20,16 @@ public class VoronoiCellWithDistance implements Comparable<VoronoiCellWithDistan
         return distance;
     }
 
-    public VoronoiCell getCell() {
+    public Cell getCell() {
         return cell;
     }
 
-    public VoronoiGerm getGerm() {
+    public Cell getGerm() {
         return germ;
     }
 
     @Override
-    public int compareTo(final VoronoiCellWithDistance toCompare) {
+    public int compareTo(final CellWithDistance toCompare) {
         return Integer.compare(this.distance, toCompare.distance);
     }
 

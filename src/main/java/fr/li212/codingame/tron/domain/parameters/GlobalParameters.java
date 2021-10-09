@@ -1,4 +1,4 @@
-package fr.li212.codingame.tron.adapters.parameters;
+package fr.li212.codingame.tron.domain.parameters;
 
 public class GlobalParameters {
     public static final int GRID_WIDTH = 30;

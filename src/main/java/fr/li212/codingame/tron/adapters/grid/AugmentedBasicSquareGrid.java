@@ -1,11 +1,10 @@
 package fr.li212.codingame.tron.adapters.grid;
 
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
-import fr.li212.codingame.tron.domain.grid.port.Grid;
+import fr.li212.codingame.tron.domain.grid.port.Cell;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiDiagram;
 import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiDiagramProvider;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGerm;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ public class AugmentedBasicSquareGrid implements AugmentedGrid {
         return voronoiDiagram.getVoronoiSpaces().get(this.germFromPlayerContext(playerContext)).size();
     }
 
-    private VoronoiGerm germFromPlayerContext(final PlayerContext playerContext) {
-        return new VoronoiGerm((SquareCell) underlyingGrid.getCell(playerContext.getCurrentCoordinate()));
+    private Cell germFromPlayerContext(final PlayerContext playerContext) {
+        return underlyingGrid.getCell(playerContext.getCurrentCoordinate());
     }
 }

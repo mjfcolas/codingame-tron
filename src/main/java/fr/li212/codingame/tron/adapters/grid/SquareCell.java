@@ -2,12 +2,8 @@ package fr.li212.codingame.tron.adapters.grid;
 
 import fr.li212.codingame.tron.domain.grid.port.Cell;
 import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
-import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintableVoronoiCell;
 
-import java.util.Objects;
-
-public class SquareCell implements Cell, VoronoiCell, PrintableVoronoiCell {
+public class SquareCell implements Cell {
     private final SquareCoordinate coordinate;
     private final PlayerIdentifier playerOnCell;
 
@@ -36,7 +32,7 @@ public class SquareCell implements Cell, VoronoiCell, PrintableVoronoiCell {
     }
 
     @Override
-    public boolean isVoronoiEligible(final int reductionFactor) {
+    public boolean isEligibleForComputation(final int reductionFactor) {
         return (this.getX() + this.getY()) % reductionFactor == 0;
     }
 

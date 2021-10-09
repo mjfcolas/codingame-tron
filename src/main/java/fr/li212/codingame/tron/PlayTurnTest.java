@@ -4,7 +4,7 @@ import fr.li212.codingame.tron.adapters.grid.AugmentedBasicSquareGridProvider;
 import fr.li212.codingame.tron.adapters.grid.BasicSquareGrid;
 import fr.li212.codingame.tron.adapters.grid.SquareCoordinate;
 import fr.li212.codingame.tron.adapters.io.OutputCodingameTurn;
-import fr.li212.codingame.tron.adapters.parameters.GlobalParameters;
+import fr.li212.codingame.tron.domain.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.PlayTurn;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.domain.player.PlayerIdentifier;

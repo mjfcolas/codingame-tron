@@ -1,6 +1,6 @@
 package fr.li212.codingame.tron.adapters.grid;
 
-import fr.li212.codingame.tron.adapters.parameters.GlobalParameters;
+import fr.li212.codingame.tron.domain.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
 import fr.li212.codingame.tron.domain.grid.port.Grid;
 import fr.li212.codingame.tron.domain.player.PlayerContext;

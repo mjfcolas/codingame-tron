@@ -8,15 +8,12 @@ import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
 import fr.li212.codingame.tron.infrastructure.path.Path;
 import fr.li212.codingame.tron.infrastructure.path.astar.AStarManhattanPathFinder;
 import fr.li212.codingame.tron.infrastructure.path.direct.DirectManhattanPathFinder;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGerm;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiGrid;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class BasicSquareGrid implements Grid, VoronoiGrid {
+public class BasicSquareGrid implements Grid {
     private final int width;
     private final int height;
     private final SquareCell[][] cells;
@@ -122,30 +119,25 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
     }
 
     @Override
-    public List<Coordinate> path(final VoronoiCell start, final VoronoiCell end) {
-        if (!(start instanceof SquareCell) || !(end instanceof SquareCell)) {
-            System.err.println(start);
-            System.err.println(end);
-            throw new IllegalStateException("Only Square cell are allowed in this implementation");
-        }
+    public List<Coordinate> path(final Cell start, final Cell end) {
         final StartAndDestKey key = new StartAndDestKey(start.getCoordinate(), end.getCoordinate());
         if (cachedPaths.containsKey(key)) {
             return cachedPaths.get(key);
         }
         Path path;
-        path = this.directPath((SquareCell) start, (SquareCell) end);
+        path = this.directPath(start, end);
         if (!path.exists()) {
-            path = this.aStarPath((SquareCell) start, (SquareCell) end);
+            path = this.aStarPath(start, end);
         }
         cachedPaths.put(key, path.getPath());
         return path.getPath();
     }
 
-    private Path directPath(final SquareCell start, final SquareCell end) {
+    private Path directPath(final Cell start, final Cell end) {
         return directManhattanPathFinder.findPath(this.getCells(), start.getCoordinate(), end.getCoordinate());
     }
 
-    private Path aStarPath(final SquareCell start, final SquareCell end) {
+    private Path aStarPath(final Cell start, final Cell end) {
         return aStarManhattanPathFinder.findPath(start.getCoordinate(), end.getCoordinate());
     }
 
@@ -180,23 +172,10 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
     }
 
     @Override
-    public Collection<VoronoiCell> getVoronoiCells() {
-        List<VoronoiCell> result = new ArrayList<>(width * height);
-        for (final SquareCell[] cell : cells) {
-            for (final SquareCell squareCell : cell) {
-                if (squareCell.isAccessible()) {
-                    result.add(squareCell);
-                }
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public Collection<VoronoiCell> getVoronoiCellsAccessibleFromGerm(final VoronoiGerm germ) {
+    public Collection<Cell> getAccessibleCellsFromStartingPoint(final Cell startingPoint) {
         final Set<Coordinate> accessibleCoordinates = new HashSet<>(width * height);
         Stack<Coordinate> workStack = new Stack<>();
-        final Coordinate startCoordinate = germ.getCell().getCoordinate();
+        final Coordinate startCoordinate = startingPoint.getCoordinate();
         workStack.push(startCoordinate);
         while (!workStack.isEmpty()) {
             Coordinate currentCoordinate = workStack.pop();
@@ -208,22 +187,24 @@ public class BasicSquareGrid implements Grid, VoronoiGrid {
                 }
             }
         }
-        final List<VoronoiCell> result = new ArrayList<>(width * height);
+        final List<Cell> result = new ArrayList<>(width * height);
         for (Coordinate coordinate : accessibleCoordinates) {
             result.add(this.cells[coordinate.getX()][coordinate.getY()]);
         }
         return result;
     }
 
-
+    @Override
     public SquareCell[][] getCells() {
         return cells;
     }
 
+    @Override
     public int getWidth() {
         return width;
     }
 
+    @Override
     public int getHeight() {
         return height;
     }

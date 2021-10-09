@@ -1,11 +1,10 @@
 package fr.li212.codingame.tron.infrastructure.voronoi.dummy;
 
 import fr.li212.codingame.tron.adapters.grid.SquareCoordinate;
+import fr.li212.codingame.tron.domain.grid.port.Cell;
 import fr.li212.codingame.tron.domain.grid.port.Coordinate;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiCell;
-import fr.li212.codingame.tron.infrastructure.voronoi.printer.PrintableVoronoiCell;
 
-public class DummyCell implements VoronoiCell, PrintableVoronoiCell {
+public class DummyCell implements Cell {
 
     private final int x;
     private final int y;
@@ -13,6 +12,11 @@ public class DummyCell implements VoronoiCell, PrintableVoronoiCell {
     public DummyCell(final int x, final int y) {
         this.x = x;
         this.y = y;
+    }
+
+    @Override
+    public boolean isAccessible() {
+        return true;
     }
 
     public int getX() {
@@ -23,7 +27,7 @@ public class DummyCell implements VoronoiCell, PrintableVoronoiCell {
         return y;
     }
 
-    public int distance(final DummyCell other){
+    public int distance(final DummyCell other) {
         return Math.abs(this.getX() - other.getX()) + Math.abs(this.getY() - other.getY());
     }
 
@@ -36,12 +40,12 @@ public class DummyCell implements VoronoiCell, PrintableVoronoiCell {
     }
 
     @Override
-    public boolean isVoronoiEligible(final int reductionFactor) {
-        return true;
+    public Coordinate getCoordinate() {
+        return new SquareCoordinate(x, y);
     }
 
     @Override
-    public Coordinate getCoordinate() {
-        return new SquareCoordinate(x, y);
+    public boolean isEligibleForComputation(final int reductionFactor) {
+        return true;
     }
 }
