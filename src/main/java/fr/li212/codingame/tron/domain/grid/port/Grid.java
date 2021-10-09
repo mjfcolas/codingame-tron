@@ -9,9 +9,11 @@ public interface Grid {
 
     Cell getCell(final Coordinate coordinate);
 
+    List<Coordinate> getNeighbours(final Coordinate coordinate);
+
     Cell[][] getCells();
 
     List<Coordinate> path(final Cell start, final Cell end);
 
-    Collection<Cell> getAccessibleCellsFromStartingPoint(final Cell startingPoint);
+    Collection<Cell> getAccessibleCoordinatesFromStartingPoint(final Coordinate startingPoint);
 }

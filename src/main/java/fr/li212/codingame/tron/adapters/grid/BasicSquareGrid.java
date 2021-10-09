@@ -141,6 +141,7 @@ public class BasicSquareGrid implements Grid {
         return aStarManhattanPathFinder.findPath(start.getCoordinate(), end.getCoordinate());
     }
 
+    @Override
     public List<Coordinate> getNeighbours(final Coordinate coordinate) {
 
         if (neighboursCache[coordinate.getX()][coordinate.getY()] == null) {
@@ -172,11 +173,10 @@ public class BasicSquareGrid implements Grid {
     }
 
     @Override
-    public Collection<Cell> getAccessibleCellsFromStartingPoint(final Cell startingPoint) {
+    public Collection<Cell> getAccessibleCoordinatesFromStartingPoint(final Coordinate startingCoordinates) {
         final Set<Coordinate> accessibleCoordinates = new HashSet<>(width * height);
         Stack<Coordinate> workStack = new Stack<>();
-        final Coordinate startCoordinate = startingPoint.getCoordinate();
-        workStack.push(startCoordinate);
+        workStack.push(startingCoordinates);
         while (!workStack.isEmpty()) {
             Coordinate currentCoordinate = workStack.pop();
             Collection<Coordinate> neighbours = this.getNeighbours(currentCoordinate);

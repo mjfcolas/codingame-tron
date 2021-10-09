@@ -52,7 +52,7 @@ public class DummyGrid implements Grid {
 
 
     @Override
-    public Collection<Cell> getAccessibleCellsFromStartingPoint(final Cell startingPoint) {
+    public Collection<Cell> getAccessibleCoordinatesFromStartingPoint(final Coordinate startingCoordinate) {
         return Arrays.stream(this.cells).flatMap(Arrays::stream).collect(Collectors.toList());
     }
 }

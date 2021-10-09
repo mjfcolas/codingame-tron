@@ -1,6 +1,8 @@
 package fr.li212.codingame.tron.domain;
 
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
+import fr.li212.codingame.tron.domain.grid.port.Cell;
+import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 import fr.li212.codingame.tron.domain.grid.port.Grid;
 import fr.li212.codingame.tron.domain.move.CellWithMove;
 import fr.li212.codingame.tron.domain.move.Move;
@@ -36,7 +38,7 @@ public class PlayTurn {
     }
 
 
-    public void playMove(){
+    public void playMove() {
         final List<Move> possibleMoves = Arrays.stream(Move.values())
                 .map(move -> new CellWithMove(
                         grid.getCell(move.computeMove(controlledPlayerContext.getCurrentCoordinate())),
@@ -44,15 +46,44 @@ public class PlayTurn {
                 .filter(cellWithMove -> cellWithMove.getCell() != null && cellWithMove.getCell().isAccessible())
                 .map(CellWithMove::getMove).collect(Collectors.toList());
 
-            final Queue<ScoredMove> moves = new PriorityQueue<>(4);
-            for (Move move : possibleMoves) {
-                final Collection<PlayerContext> predictedNextPlayerContexts = PlayerContext.predictAllPlayerContextsWithControlledPlayerMove(playerContexts, move);
-                final PlayerContext predictedControlledPlayerContext = PlayerContext.predictControlledPlayerContext(controlledPlayerContext, move);
-                final AugmentedGrid augmentedGridForMove = augmentedGridProvider.get(grid, predictedNextPlayerContexts);
-                moves.add(new ScoredMove(move, augmentedGridForMove.voronoiScore(predictedControlledPlayerContext)));
-            }
-            moves.forEach(System.err::println);
-            this.outputTurn.play(moves.remove().getMove());
+
+        Move move;
+        if (isIsolated()) {
+            move = isolatedStrategy(possibleMoves);
+        } else {
+            move = nonIsolatedStrategy(possibleMoves);
+        }
+
+        this.outputTurn.play(move);
+
     }
 
+    private boolean isIsolated() {
+        Collection<Cell> accessibleCells = this.grid.getAccessibleCoordinatesFromStartingPoint(controlledPlayerContext.getCurrentCoordinate());
+        Collection<Cell> positionAdjacentToOtherPlayers = this.playerContexts.stream()
+                .filter(playerContext -> !playerContext.isControlledPlayerContext())
+                .flatMap(playerContext -> {
+                    final Collection<Coordinate> neighbours = grid.getNeighbours(playerContext.getCurrentCoordinate());
+                    return neighbours.stream().map(coordinate -> grid.getCells()[coordinate.getX()][coordinate.getY()])
+                            .filter(Cell::isAccessible);
+                }).collect(Collectors.toSet());
+        return accessibleCells.stream().noneMatch(positionAdjacentToOtherPlayers::contains);
+    }
+
+    private Move nonIsolatedStrategy(final List<Move> possibleMoves) {
+
+        final Queue<ScoredMove> moves = new PriorityQueue<>(4);
+        for (Move move : possibleMoves) {
+            final Collection<PlayerContext> predictedNextPlayerContexts = PlayerContext.predictAllPlayerContextsWithControlledPlayerMove(playerContexts, move);
+            final PlayerContext predictedControlledPlayerContext = PlayerContext.predictControlledPlayerContext(controlledPlayerContext, move);
+            final AugmentedGrid augmentedGridForMove = augmentedGridProvider.get(grid, predictedNextPlayerContexts);
+            moves.add(new ScoredMove(move, augmentedGridForMove.voronoiScore(predictedControlledPlayerContext)));
+        }
+        moves.forEach(System.err::println);
+        return moves.remove().getMove();
+    }
+
+    private Move isolatedStrategy(final List<Move> possibleMoves){
+        return null;
+    }
 }

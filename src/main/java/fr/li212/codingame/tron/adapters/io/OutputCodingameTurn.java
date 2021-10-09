@@ -7,7 +7,9 @@ public class OutputCodingameTurn implements OutputTurn {
 
     @Override
     public void play(final Move move) {
-        synchronized (System.out) {
+        if (move == null) {
+            System.out.println("I'M DEAD");
+        } else {
             System.out.println(move);
         }
     }

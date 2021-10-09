@@ -50,7 +50,7 @@ public class VoronoiDiagramProvider {
         final Map<StartAndDestKey, Integer> cachedDistances = new HashMap<>();
 
         for (Cell germ : germs) {
-            final Collection<Cell> cellsAccessibleFromGerm = grid.getAccessibleCellsFromStartingPoint(germ);
+            final Collection<Cell> cellsAccessibleFromGerm = grid.getAccessibleCoordinatesFromStartingPoint(germ.getCoordinate());
             for (Cell cell : cellsAccessibleFromGerm) {
                 if (!cell.isEligibleForComputation(reductionFactor)) {
                     continue;
