@@ -33,15 +33,15 @@ class PlayTurnWithStartConditions {
                     "    XX                        \n" +
                     "     X                        \n" +
                     "     XXXXXX  3                \n" +
-                    "          XX X  2X            \n" +
-                    "           XXX XXX  XXXXXXXXXX\n" +
-                    "               X1XXXX         \n" +
-                    "  X            X              \n" +
-                    "  XXX          X              \n" +
+                    "          XX X                \n" +
+                    "           XXX      XXXXXXXXXX\n" +
+                    "                1XXXX         \n" +
+                    "  X                           \n" +
+                    "  XXX                         \n" +
                     "    XXXXXXXXXXXX              \n" +
-                    "    X                         \n" +
-                    "    X                         \n" +
-                    "    XXXXXXXXX0                \n" +
+                    "    X          X              \n" +
+                    "    X          X              \n" +
+                    "    XXXXXXXXX0 2              \n" +
                     "                              \n" +
                     "                              ";
 

@@ -1,8 +1,6 @@
 package fr.li212.codingame.tron.domain;
 
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
-import fr.li212.codingame.tron.domain.grid.port.Cell;
-import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 import fr.li212.codingame.tron.domain.grid.port.Grid;
 import fr.li212.codingame.tron.domain.move.CellWithMove;
 import fr.li212.codingame.tron.domain.move.Move;
@@ -46,16 +44,15 @@ public class PlayTurn {
                 .filter(cellWithMove -> cellWithMove.getCell() != null && cellWithMove.getCell().isAccessible())
                 .map(CellWithMove::getMove).collect(Collectors.toList());
 
-        final Queue<ScoredMove> moves = new PriorityQueue<>(4);
+        Queue<ScoredMove> moves = new PriorityQueue<>(4);
         for (Move move : possibleMoves) {
-            final Collection<PlayerContext> predictedNextPlayerContexts = PlayerContext.predictAllPlayerContextsWithControlledPlayerMove(playerContexts, move);
-            final PlayerContext predictedControlledPlayerContext = PlayerContext.predictControlledPlayerContext(controlledPlayerContext, move);
+            final Collection<PlayerContext> predictedNextPlayerContexts = PlayerContext.predictAllPlayerContextsWithMoveForOneContext(playerContexts, controlledPlayerContext.getPlayerIdentifier(), move);
+            final PlayerContext predictedControlledPlayerContext = PlayerContext.predictPlayerContext(controlledPlayerContext, move);
             final AugmentedGrid augmentedGridForMove = augmentedGridProvider.get(grid, predictedNextPlayerContexts, predictedControlledPlayerContext);
             moves.add(new ScoredMove(move,
-                    augmentedGridForMove.voronoiScore(predictedControlledPlayerContext),
+                    augmentedGridForMove.voronoiScore(),
                     augmentedGridForMove.numberOfLibertiesAfter()));
         }
-        moves.forEach(System.err::println);
         this.outputTurn.play(moves.remove().getMove());
     }
 }

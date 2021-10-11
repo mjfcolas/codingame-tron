@@ -31,11 +31,6 @@ public class SquareCell implements Cell {
         return this.playerOnCell == null;
     }
 
-    @Override
-    public boolean isEligibleForComputation(final int reductionFactor) {
-        return (this.getX() + this.getY()) % reductionFactor == 0;
-    }
-
     public PlayerIdentifier getPlayerOnCell() {
         return playerOnCell;
     }

@@ -28,7 +28,6 @@ public class AugmentedBasicSquareGridProvider implements AugmentedGridProvider {
                 voronoiDiagramProvider,
                 (BasicSquareGrid) grid,
                 newPlayerContexts,
-                predictedControlledPlayerContext,
-                GlobalParameters.VORONOI_REDUCTION_FACTOR);
+                predictedControlledPlayerContext);
     }
 }

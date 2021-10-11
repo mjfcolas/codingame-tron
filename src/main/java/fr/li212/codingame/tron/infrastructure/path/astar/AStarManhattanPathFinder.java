@@ -6,7 +6,6 @@ import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 import fr.li212.codingame.tron.infrastructure.path.Path;
 
 import java.util.*;
-import java.util.concurrent.PriorityBlockingQueue;
 
 public class AStarManhattanPathFinder {
     private final int width;
@@ -35,7 +34,7 @@ public class AStarManhattanPathFinder {
         startNode.setClosed();
         while (!openSet.isEmpty()) {
             AStarNode currentNode = openSet.remove();
-            if (currentNode.equals(goalNode)) {
+            if (currentNode.equals(goalNode) || currentNode.getUnderlyingCoordinate().distance(goal) == 1) {
                 return computePath(currentNode);
             }
             final Collection<AStarNode> neighbours = this.getNeighbours(currentNode);

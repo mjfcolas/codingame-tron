@@ -43,9 +43,4 @@ public class DummyCell implements Cell {
     public Coordinate getCoordinate() {
         return new SquareCoordinate(x, y);
     }
-
-    @Override
-    public boolean isEligibleForComputation(final int reductionFactor) {
-        return true;
-    }
 }

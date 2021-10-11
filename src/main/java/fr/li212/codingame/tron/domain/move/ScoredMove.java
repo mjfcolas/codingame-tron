@@ -4,15 +4,17 @@ import fr.li212.codingame.tron.domain.ScoreCoefficients;
 
 public class ScoredMove implements Comparable<ScoredMove> {
     private final Move move;
-    private final Integer score;
+    private final float voronoiScore;
+    private final int numberOfLibertiesAfter;
+
 
     public ScoredMove(
             final Move move,
             final float voronoiScore,
             final int numberOfLibertiesAfter) {
         this.move = move;
-        this.score = (int) (voronoiScore * ScoreCoefficients.BEST_VORONOI.getCoefficient())
-                + (numberOfLibertiesAfter * ScoreCoefficients.LEAST_NUMBER_OF_LIBERTIES.getCoefficient());
+        this.voronoiScore = voronoiScore;
+        this.numberOfLibertiesAfter = numberOfLibertiesAfter;
     }
 
     public Move getMove() {
@@ -20,19 +22,22 @@ public class ScoredMove implements Comparable<ScoredMove> {
     }
 
     public Integer getScore() {
-        return score;
+        return (int) (voronoiScore * ScoreCoefficients.BEST_VORONOI.getCoefficient())
+                + (numberOfLibertiesAfter * ScoreCoefficients.LEAST_NUMBER_OF_LIBERTIES.getCoefficient());
     }
 
     @Override
     public int compareTo(final ScoredMove toCompare) {
-        return -score.compareTo(toCompare.getScore());
+        return -getScore().compareTo(toCompare.getScore());
     }
 
     @Override
     public String toString() {
         return "ScoredMove{" +
                 "move=" + move +
-                ", score=" + score +
+                ", voronoi=" + voronoiScore +
+                ", liberties=" + numberOfLibertiesAfter +
+                ", score=" + this.getScore() +
                 '}';
     }
 }

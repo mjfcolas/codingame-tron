@@ -26,9 +26,9 @@ public class PlayerContext {
         this.eliminated = eliminated;
     }
 
-    public static Collection<PlayerContext> predictAllPlayerContextsWithControlledPlayerMove(final Collection<PlayerContext> initialPlayerContexts, final Move moveToPredict){
+    public static Collection<PlayerContext> predictAllPlayerContextsWithMoveForOneContext(final Collection<PlayerContext> initialPlayerContexts, final PlayerIdentifier playerToMove, final Move moveToPredict) {
         return initialPlayerContexts.stream().map(playerContext -> {
-            if(playerContext.isControlledPlayerContext()){
+            if (playerContext.playerIdentifier.equals(playerToMove)) {
                 return new PlayerContext(
                         playerContext.getPlayerIdentifier(),
                         playerContext.getStartCoordinate(),
@@ -41,7 +41,7 @@ public class PlayerContext {
         }).collect(Collectors.toSet());
     }
 
-    public static PlayerContext predictControlledPlayerContext(final PlayerContext playerContext, final Move moveToPredict){
+    public static PlayerContext predictPlayerContext(final PlayerContext playerContext, final Move moveToPredict) {
         return new PlayerContext(
                 playerContext.getPlayerIdentifier(),
                 playerContext.getStartCoordinate(),

@@ -31,11 +31,11 @@ public class VoronoiDiagramProvider {
         }
     }
 
-    public VoronoiDiagram get(final Grid grid, final Collection<Cell> germs, final int reductionFactor) {
+    public VoronoiDiagram get(final Grid grid, final Collection<Cell> germs) {
 
         final Map<Cell, Queue<CellWithDistance>> distancesByCell = new HashMap<>();
 
-        this.getDistances(grid, germs, reductionFactor, distancesByCell);
+        this.getDistances(grid, germs, distancesByCell);
         final VoronoiDiagram result = this.getDiagram(germs, distancesByCell);
         //PrintVoronoiDiagram.print(grid, result);
         return result;
@@ -44,16 +44,12 @@ public class VoronoiDiagramProvider {
     private void getDistances(
             final Grid grid,
             final Collection<Cell> germs,
-            final int reductionFactor,
             final Map<Cell, Queue<CellWithDistance>> distancesByCell) {
         final Map<StartAndDestKey, Integer> cachedDistances = new HashMap<>();
 
         for (Cell germ : germs) {
             final Collection<Cell> cellsAccessibleFromGerm = grid.getAccessibleCoordinatesFromStartingPoint(germ.getCoordinate());
             for (Cell cell : cellsAccessibleFromGerm) {
-                if (!cell.isEligibleForComputation(reductionFactor)) {
-                    continue;
-                }
                 if (!distancesByCell.containsKey(cell)) {
                     distancesByCell.put(cell, new PriorityQueue<>());
                 }
