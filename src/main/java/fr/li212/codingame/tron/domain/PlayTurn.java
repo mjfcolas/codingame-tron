@@ -16,7 +16,7 @@ public class PlayTurn {
     final AugmentedGridProvider augmentedGridProvider;
 
     final Grid grid;
-    final Collection<PlayerContext> playerContexts;
+    final Collection<PlayerContext> opponentContexts;
     final PlayerContext controlledPlayerContext;
     final OutputTurn outputTurn;
 
@@ -27,7 +27,9 @@ public class PlayTurn {
             final OutputTurn outputTurn) {
         this.augmentedGridProvider = augmentedGridProvider;
         this.grid = grid;
-        this.playerContexts = playerContexts;
+        this.opponentContexts = playerContexts.stream()
+                .filter(playerContext -> !playerContext.isControlledPlayerContext())
+                .collect(Collectors.toSet());
         this.controlledPlayerContext = playerContexts.stream()
                 .filter(PlayerContext::isControlledPlayerContext)
                 .findFirst()
@@ -46,12 +48,18 @@ public class PlayTurn {
 
         Queue<ScoredMove> moves = new PriorityQueue<>(4);
         for (Move move : possibleMoves) {
-            final Collection<PlayerContext> predictedNextPlayerContexts = PlayerContext.predictAllPlayerContextsWithMoveForOneContext(playerContexts, controlledPlayerContext.getPlayerIdentifier(), move);
             final PlayerContext predictedControlledPlayerContext = PlayerContext.predictPlayerContext(controlledPlayerContext, move);
-            final AugmentedGrid augmentedGridForMove = augmentedGridProvider.get(grid, predictedNextPlayerContexts, predictedControlledPlayerContext);
+            final Collection<PlayerContext> allContexts = new ArrayList<>();
+            allContexts.add(predictedControlledPlayerContext);
+            allContexts.addAll(opponentContexts);
+            final AugmentedGrid augmentedGridForMove = augmentedGridProvider.get(grid, allContexts);
+            final float opponentsAccessibleCellNumber = opponentContexts.stream()
+                    .map(augmentedGridForMove::voronoiScore)
+                    .reduce(0f, Float::sum);
             moves.add(new ScoredMove(move,
-                    augmentedGridForMove.voronoiScore(),
-                    augmentedGridForMove.numberOfLibertiesAfter()));
+                    augmentedGridForMove.voronoiScore(predictedControlledPlayerContext),
+                    opponentsAccessibleCellNumber,
+                    augmentedGridForMove.numberOfLibertiesAfter(predictedControlledPlayerContext)));
         }
         this.outputTurn.play(moves.remove().getMove());
     }

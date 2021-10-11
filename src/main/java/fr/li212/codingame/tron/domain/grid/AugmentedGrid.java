@@ -1,7 +1,9 @@
 package fr.li212.codingame.tron.domain.grid;
 
-public interface AugmentedGrid {
-    float voronoiScore();
+import fr.li212.codingame.tron.domain.player.PlayerContext;
 
-    int numberOfLibertiesAfter();
+public interface AugmentedGrid {
+    float voronoiScore(final PlayerContext playerContext);
+
+    int numberOfLibertiesAfter(final PlayerContext playerContext);
 }

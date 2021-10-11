@@ -14,16 +14,13 @@ public class AugmentedBasicSquareGrid implements AugmentedGrid {
 
     private final BasicSquareGrid underlyingGrid;
     private final VoronoiDiagram voronoiDiagram;
-    private final PlayerContext predictedCurrentPlayerContext;
 
     public AugmentedBasicSquareGrid(
             final VoronoiDiagramProvider voronoiDiagramProvider,
             final BasicSquareGrid underlyingGrid,
-            final Collection<PlayerContext> playerContexts,
-            final PlayerContext predictedCurrentPlayerContext) {
+            final Collection<PlayerContext> playerContexts) {
 
         this.underlyingGrid = underlyingGrid;
-        this.predictedCurrentPlayerContext = predictedCurrentPlayerContext;
         this.voronoiDiagram = voronoiDiagramProvider
                 .get(underlyingGrid,
                         playerContexts.stream()
@@ -33,13 +30,13 @@ public class AugmentedBasicSquareGrid implements AugmentedGrid {
 
 
     @Override
-    public float voronoiScore() {
-        return (float) numberOfVoronoiCellsForPlayer(predictedCurrentPlayerContext);
+    public float voronoiScore(final PlayerContext playerContext) {
+        return (float) numberOfVoronoiCellsForPlayer(playerContext);
     }
 
     @Override
-    public int numberOfLibertiesAfter() {
-        return underlyingGrid.getNeighbours(this.predictedCurrentPlayerContext.getCurrentCoordinate()).size();
+    public int numberOfLibertiesAfter(final PlayerContext playerContext) {
+        return underlyingGrid.getNeighbours(playerContext.getCurrentCoordinate()).size();
     }
 
     private int numberOfVoronoiCellsForPlayer(final PlayerContext playerContext) {

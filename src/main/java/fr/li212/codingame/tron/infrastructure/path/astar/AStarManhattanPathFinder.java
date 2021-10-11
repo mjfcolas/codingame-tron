@@ -34,7 +34,7 @@ public class AStarManhattanPathFinder {
         startNode.setClosed();
         while (!openSet.isEmpty()) {
             AStarNode currentNode = openSet.remove();
-            if (currentNode.equals(goalNode) || currentNode.getUnderlyingCoordinate().distance(goal) == 1) {
+            if (currentNode.equals(goalNode)) {
                 return computePath(currentNode);
             }
             final Collection<AStarNode> neighbours = this.getNeighbours(currentNode);

@@ -26,21 +26,6 @@ public class PlayerContext {
         this.eliminated = eliminated;
     }
 
-    public static Collection<PlayerContext> predictAllPlayerContextsWithMoveForOneContext(final Collection<PlayerContext> initialPlayerContexts, final PlayerIdentifier playerToMove, final Move moveToPredict) {
-        return initialPlayerContexts.stream().map(playerContext -> {
-            if (playerContext.playerIdentifier.equals(playerToMove)) {
-                return new PlayerContext(
-                        playerContext.getPlayerIdentifier(),
-                        playerContext.getStartCoordinate(),
-                        playerContext.currentCoordinate.adjacentCoordinate(moveToPredict),
-                        playerContext.isControlledPlayerContext,
-                        playerContext.isEliminated()
-                );
-            }
-            return playerContext;
-        }).collect(Collectors.toSet());
-    }
-
     public static PlayerContext predictPlayerContext(final PlayerContext playerContext, final Move moveToPredict) {
         return new PlayerContext(
                 playerContext.getPlayerIdentifier(),

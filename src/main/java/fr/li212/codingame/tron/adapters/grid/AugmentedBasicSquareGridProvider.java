@@ -1,7 +1,5 @@
 package fr.li212.codingame.tron.adapters.grid;
 
-import fr.li212.codingame.tron.domain.move.Move;
-import fr.li212.codingame.tron.domain.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
 import fr.li212.codingame.tron.domain.grid.port.Grid;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
@@ -20,14 +18,13 @@ public class AugmentedBasicSquareGridProvider implements AugmentedGridProvider {
     }
 
     @Override
-    public AugmentedGrid get(final Grid grid, final Collection<PlayerContext> newPlayerContexts, final PlayerContext predictedControlledPlayerContext){
+    public AugmentedGrid get(final Grid grid, final Collection<PlayerContext> newPlayerContexts) {
         if (!(grid instanceof BasicSquareGrid)) {
             throw new IllegalStateException("Only Basic square grid are allowed in this implementation");
         }
         return new AugmentedBasicSquareGrid(
                 voronoiDiagramProvider,
                 (BasicSquareGrid) grid,
-                newPlayerContexts,
-                predictedControlledPlayerContext);
+                newPlayerContexts);
     }
 }

@@ -9,6 +9,5 @@ import java.util.Collection;
 
 public interface AugmentedGridProvider {
     AugmentedGrid get(final Grid grid,
-                      final Collection<PlayerContext> newPlayerContexts,
-                      final PlayerContext predictedControlledPlayerContext);
+                      final Collection<PlayerContext> newPlayerContexts);
 }
