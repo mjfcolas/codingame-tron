@@ -1,4 +1,4 @@
-package fr.li212.codingame.tron.domain.grid.port;
+package fr.li212.codingame.tron.domain.grid;
 
 import fr.li212.codingame.tron.domain.move.Move;
 

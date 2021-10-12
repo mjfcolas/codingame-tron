@@ -1,9 +1,9 @@
-package fr.li212.codingame.tron.infrastructure.newvoronoi;
+package fr.li212.codingame.tron.infrastructure.voronoi;
 
 import fr.li212.codingame.tron.adapters.grid.SquareCoordinate;
-import fr.li212.codingame.tron.domain.grid.port.Cell;
-import fr.li212.codingame.tron.domain.grid.port.Coordinate;
-import fr.li212.codingame.tron.domain.grid.port.Grid;
+import fr.li212.codingame.tron.domain.grid.Cell;
+import fr.li212.codingame.tron.domain.grid.Coordinate;
+import fr.li212.codingame.tron.domain.grid.Grid;
 
 import java.util.*;
 import java.util.stream.Collectors;

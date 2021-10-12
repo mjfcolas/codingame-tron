@@ -1,10 +1,7 @@
 package fr.li212.codingame.tron.domain.player;
 
-import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+import fr.li212.codingame.tron.domain.grid.Coordinate;
 import fr.li212.codingame.tron.domain.move.Move;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class PlayerContext {
     private final PlayerIdentifier playerIdentifier;

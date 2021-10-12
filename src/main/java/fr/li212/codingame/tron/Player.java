@@ -4,12 +4,10 @@ import fr.li212.codingame.tron.adapters.grid.AugmentedBasicSquareGridProvider;
 import fr.li212.codingame.tron.adapters.grid.BasicSquareGrid;
 import fr.li212.codingame.tron.adapters.io.InputCodingameTurn;
 import fr.li212.codingame.tron.adapters.io.OutputCodingameTurn;
-import fr.li212.codingame.tron.domain.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.PlayTurn;
+import fr.li212.codingame.tron.domain.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.domain.port.OutputTurn;
-import fr.li212.codingame.tron.infrastructure.newvoronoi.VoronoiSpaceProvider;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiDiagramProvider;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

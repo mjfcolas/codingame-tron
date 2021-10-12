@@ -1,7 +1,7 @@
-package fr.li212.codingame.tron.infrastructure.newvoronoi;
+package fr.li212.codingame.tron.infrastructure.voronoi.printer;
 
-import fr.li212.codingame.tron.domain.grid.port.Coordinate;
-import fr.li212.codingame.tron.domain.grid.port.Grid;
+import fr.li212.codingame.tron.domain.grid.Coordinate;
+import fr.li212.codingame.tron.domain.grid.Grid;
 
 import java.util.Collections;
 import java.util.Map;

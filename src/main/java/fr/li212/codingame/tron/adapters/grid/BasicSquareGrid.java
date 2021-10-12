@@ -1,13 +1,10 @@
 package fr.li212.codingame.tron.adapters.grid;
 
-import fr.li212.codingame.tron.domain.grid.port.Cell;
-import fr.li212.codingame.tron.domain.grid.port.Coordinate;
-import fr.li212.codingame.tron.domain.grid.port.Grid;
+import fr.li212.codingame.tron.domain.grid.Cell;
+import fr.li212.codingame.tron.domain.grid.Coordinate;
+import fr.li212.codingame.tron.domain.grid.Grid;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
-import fr.li212.codingame.tron.infrastructure.path.Path;
-import fr.li212.codingame.tron.infrastructure.path.astar.AStarManhattanPathFinder;
-import fr.li212.codingame.tron.infrastructure.path.direct.DirectManhattanPathFinder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,35 +14,8 @@ public class BasicSquareGrid implements Grid {
     private final int width;
     private final int height;
     private final SquareCell[][] cells;
-    private final Map<StartAndDestKey, List<Coordinate>> cachedPaths = new HashMap<>();
-    private final AStarManhattanPathFinder aStarManhattanPathFinder;
-    private final DirectManhattanPathFinder directManhattanPathFinder = new DirectManhattanPathFinder();
 
     private final ArrayList[][] neighboursCache;
-
-    static class StartAndDestKey {
-        private final Coordinate start;
-        private final Coordinate end;
-
-        public StartAndDestKey(final Coordinate start, final Coordinate end) {
-            this.start = start;
-            this.end = end;
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            final StartAndDestKey that = (StartAndDestKey) o;
-            return Objects.equals(start, that.start) && Objects.equals(end, that.end)
-                    || Objects.equals(start, that.end) && Objects.equals(end, that.start);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(start, end);
-        }
-    }
 
     public BasicSquareGrid(
             final int width,
@@ -57,7 +27,6 @@ public class BasicSquareGrid implements Grid {
         IntStream.range(0, width).boxed()
                 .forEach(x -> IntStream.range(0, height).boxed()
                         .forEach(y -> cells[x][y] = new SquareCell(new SquareCoordinate(x, y), null)));
-        aStarManhattanPathFinder = new AStarManhattanPathFinder(this);
     }
 
     public BasicSquareGrid(
@@ -68,7 +37,6 @@ public class BasicSquareGrid implements Grid {
         this.height = height;
         neighboursCache = new ArrayList[width][height];
         this.cells = cells;
-        aStarManhattanPathFinder = new AStarManhattanPathFinder(this);
     }
 
 
@@ -105,9 +73,6 @@ public class BasicSquareGrid implements Grid {
                             }
                             this.cells[x][y] = new SquareCell(cell.getCoordinate(), playerOnCell);
                         }));
-
-        aStarManhattanPathFinder = new AStarManhattanPathFinder(this);
-        //BasicSquareGridPrinter.print(this, playerContexts);
     }
 
     @Override
@@ -116,29 +81,6 @@ public class BasicSquareGrid implements Grid {
             return null;
         }
         return cells[coordinate.getX()][coordinate.getY()];
-    }
-
-    @Override
-    public List<Coordinate> path(final Cell start, final Cell end) {
-        final StartAndDestKey key = new StartAndDestKey(start.getCoordinate(), end.getCoordinate());
-        if (cachedPaths.containsKey(key)) {
-            return cachedPaths.get(key);
-        }
-        Path path;
-        path = this.directPath(start, end);
-        if (!path.exists()) {
-            path = this.aStarPath(start, end);
-        }
-        cachedPaths.put(key, path.getPath());
-        return path.getPath();
-    }
-
-    private Path directPath(final Cell start, final Cell end) {
-        return directManhattanPathFinder.findPath(this.getCells(), start.getCoordinate(), end.getCoordinate());
-    }
-
-    private Path aStarPath(final Cell start, final Cell end) {
-        return aStarManhattanPathFinder.findPath(start.getCoordinate(), end.getCoordinate());
     }
 
     @Override
@@ -170,28 +112,6 @@ public class BasicSquareGrid implements Grid {
             return result;
         }
         return neighboursCache[coordinate.getX()][coordinate.getY()];
-    }
-
-    @Override
-    public Collection<Cell> getAccessibleCoordinatesFromStartingPoint(final Coordinate startingCoordinates) {
-        final Set<Coordinate> accessibleCoordinates = new HashSet<>(width * height);
-        Stack<Coordinate> workStack = new Stack<>();
-        workStack.push(startingCoordinates);
-        while (!workStack.isEmpty()) {
-            Coordinate currentCoordinate = workStack.pop();
-            Collection<Coordinate> neighbours = this.getNeighbours(currentCoordinate);
-            for (Coordinate coordinate : neighbours) {
-                if (!accessibleCoordinates.contains(coordinate)) {
-                    accessibleCoordinates.add(coordinate);
-                    workStack.push(coordinate);
-                }
-            }
-        }
-        final List<Cell> result = new ArrayList<>(width * height);
-        for (Coordinate coordinate : accessibleCoordinates) {
-            result.add(this.cells[coordinate.getX()][coordinate.getY()]);
-        }
-        return result;
     }
 
     @Override

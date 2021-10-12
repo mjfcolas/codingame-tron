@@ -10,7 +10,6 @@ import fr.li212.codingame.tron.domain.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
 import fr.li212.codingame.tron.domain.port.OutputTurn;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiDiagramProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,7 @@ class PlayTurnWithStartConditions {
 
 
     private static final String START_GRID =
-                    "                              \n" +
+            "                              \n" +
                     "                              \n" +
                     "                              \n" +
                     "                              \n" +

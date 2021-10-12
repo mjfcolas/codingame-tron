@@ -1,4 +1,4 @@
-package fr.li212.codingame.tron.domain.grid.port;
+package fr.li212.codingame.tron.domain.grid;
 
 public interface Cell {
     boolean isAccessible();

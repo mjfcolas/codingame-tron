@@ -1,6 +1,6 @@
 package fr.li212.codingame.tron.adapters.grid;
 
-import fr.li212.codingame.tron.domain.grid.port.Cell;
+import fr.li212.codingame.tron.domain.grid.Cell;
 import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
 
 public class SquareCell implements Cell {

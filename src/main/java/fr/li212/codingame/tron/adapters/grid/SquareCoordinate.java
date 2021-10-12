@@ -1,9 +1,8 @@
 package fr.li212.codingame.tron.adapters.grid;
 
-import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+import fr.li212.codingame.tron.domain.grid.Coordinate;
 import fr.li212.codingame.tron.domain.move.Move;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 public class SquareCoordinate implements Coordinate {

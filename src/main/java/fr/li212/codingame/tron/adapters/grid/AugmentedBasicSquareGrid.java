@@ -1,9 +1,9 @@
 package fr.li212.codingame.tron.adapters.grid;
 
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
-import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+import fr.li212.codingame.tron.domain.grid.Coordinate;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
-import fr.li212.codingame.tron.infrastructure.newvoronoi.VoronoiSpaceProvider;
+import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiSpaceProvider;
 
 import java.util.Collection;
 import java.util.Map;

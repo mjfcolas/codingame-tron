@@ -1,6 +1,6 @@
-package fr.li212.codingame.tron.infrastructure.newvoronoi;
+package fr.li212.codingame.tron.infrastructure.voronoi;
 
-import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+import fr.li212.codingame.tron.domain.grid.Coordinate;
 
 public class GermWithDistance {
     private Coordinate germ;

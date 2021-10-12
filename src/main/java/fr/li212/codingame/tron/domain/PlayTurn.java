@@ -1,7 +1,7 @@
 package fr.li212.codingame.tron.domain;
 
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
-import fr.li212.codingame.tron.domain.grid.port.Grid;
+import fr.li212.codingame.tron.domain.grid.Grid;
 import fr.li212.codingame.tron.domain.move.CellWithMove;
 import fr.li212.codingame.tron.domain.move.Move;
 import fr.li212.codingame.tron.domain.move.ScoredMove;

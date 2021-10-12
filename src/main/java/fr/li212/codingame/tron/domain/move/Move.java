@@ -1,6 +1,6 @@
 package fr.li212.codingame.tron.domain.move;
 
-import fr.li212.codingame.tron.domain.grid.port.Coordinate;
+import fr.li212.codingame.tron.domain.grid.Coordinate;
 
 public enum Move {
     UP,

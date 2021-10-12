@@ -1,5 +1,7 @@
-package fr.li212.codingame.tron.adapters.grid;
+package fr.li212.codingame.tron.adapters.grid.printer;
 
+import fr.li212.codingame.tron.adapters.grid.BasicSquareGrid;
+import fr.li212.codingame.tron.adapters.grid.SquareCell;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 
 import java.util.Collection;
