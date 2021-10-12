@@ -1,31 +1,30 @@
 package fr.li212.codingame.tron.adapters.grid;
 
 import fr.li212.codingame.tron.domain.grid.AugmentedGrid;
-import fr.li212.codingame.tron.domain.grid.port.Cell;
+import fr.li212.codingame.tron.domain.grid.port.Coordinate;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiDiagram;
-import fr.li212.codingame.tron.infrastructure.voronoi.VoronoiDiagramProvider;
+import fr.li212.codingame.tron.infrastructure.newvoronoi.VoronoiSpaceProvider;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AugmentedBasicSquareGrid implements AugmentedGrid {
 
 
     private final BasicSquareGrid underlyingGrid;
-    private final VoronoiDiagram voronoiDiagram;
+    private final Map<Coordinate, Set<Coordinate>> voronoiSpaces;
 
     public AugmentedBasicSquareGrid(
-            final VoronoiDiagramProvider voronoiDiagramProvider,
             final BasicSquareGrid underlyingGrid,
             final Collection<PlayerContext> playerContexts) {
 
         this.underlyingGrid = underlyingGrid;
-        this.voronoiDiagram = voronoiDiagramProvider
-                .get(underlyingGrid,
-                        playerContexts.stream()
-                                .map(this::germFromPlayerContext)
-                                .collect(Collectors.toSet()));
+        this.voronoiSpaces = VoronoiSpaceProvider.get(underlyingGrid)
+                .get(playerContexts.stream()
+                        .map(PlayerContext::getCurrentCoordinate)
+                        .collect(Collectors.toSet()));
     }
 
 
@@ -40,10 +39,7 @@ public class AugmentedBasicSquareGrid implements AugmentedGrid {
     }
 
     private int numberOfVoronoiCellsForPlayer(final PlayerContext playerContext) {
-        return voronoiDiagram.getVoronoiSpaces().get(this.germFromPlayerContext(playerContext)).size();
+        return voronoiSpaces.get(playerContext.getCurrentCoordinate()).size();
     }
 
-    private Cell germFromPlayerContext(final PlayerContext playerContext) {
-        return underlyingGrid.getCell(playerContext.getCurrentCoordinate());
-    }
 }

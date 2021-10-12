@@ -17,9 +17,7 @@ import java.util.HashSet;
 
 class PlayTurnTest {
 
-    private final static VoronoiDiagramProvider VORONOI_DIAGRAM_PROVIDER = new VoronoiDiagramProvider();
-    private final static AugmentedBasicSquareGridProvider AUGMENTED_BASIC_SQUARE_GRID_PROVIDER = new AugmentedBasicSquareGridProvider(
-            VORONOI_DIAGRAM_PROVIDER);
+    private final static AugmentedBasicSquareGridProvider AUGMENTED_BASIC_SQUARE_GRID_PROVIDER = new AugmentedBasicSquareGridProvider();
     private final static OutputTurn OUTPUT_TURN = new OutputCodingameTurn();
 
 

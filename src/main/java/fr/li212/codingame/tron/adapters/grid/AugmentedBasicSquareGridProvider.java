@@ -10,11 +10,7 @@ import java.util.Collection;
 
 public class AugmentedBasicSquareGridProvider implements AugmentedGridProvider {
 
-    private final VoronoiDiagramProvider voronoiDiagramProvider;
-
-    public AugmentedBasicSquareGridProvider(
-            final VoronoiDiagramProvider voronoiDiagramProvider) {
-        this.voronoiDiagramProvider = voronoiDiagramProvider;
+    public AugmentedBasicSquareGridProvider() {
     }
 
     @Override
@@ -23,7 +19,6 @@ public class AugmentedBasicSquareGridProvider implements AugmentedGridProvider {
             throw new IllegalStateException("Only Basic square grid are allowed in this implementation");
         }
         return new AugmentedBasicSquareGrid(
-                voronoiDiagramProvider,
                 (BasicSquareGrid) grid,
                 newPlayerContexts);
     }
