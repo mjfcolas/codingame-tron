@@ -23,23 +23,23 @@ class PlayTurnWithStartConditions {
             "                              \n" +
                     "                              \n" +
                     "                              \n" +
-                    "   3XXXXXXXXXXXXXXX           \n" +
-                    " 0XXXXXXX         X           \n" +
-                    "        XXXXXXXXX X           \n" +
-                    "     XX  XXXXXXXX X         X \n" +
-                    "      XX X        X         X \n" +
-                    "   1XXXXXX    XX  X        XX \n" +
-                    "      XXXX    XXX X XXXXXXXX  \n" +
-                    "       XXX    X X XXX         \n" +
-                    "       XXX    2 X             \n" +
-                    "       XXX      X             \n" +
-                    "       XXX     XXXXXX         \n" +
-                    "       XXX    XXXX  XXX       \n" +
-                    "       XXX    XXX     XXXX    \n" +
-                    "       XXXXX  XXX        X    \n" +
-                    "       XX  XX XXX             \n" +
-                    "       XXXXXX                 \n" +
-                    "                              \n";
+                    "                              \n" +
+                    "                              \n" +
+                    "    X                         \n" +
+                    "    XX                        \n" +
+                    "     X                        \n" +
+                    "     XXXXXX  3                \n" +
+                    "          XX X                \n" +
+                    "           XXX      XXXXXXXXXX\n" +
+                    "                1XXXX         \n" +
+                    "  X                           \n" +
+                    "  XXX                         \n" +
+                    "    XXXXXXXXXXXX              \n" +
+                    "    X          X              \n" +
+                    "    X          X              \n" +
+                    "    XXXXXXXXX0 2              \n" +
+                    "                              \n" +
+                    "                              ";
 
     public static void main(String[] args) {
 

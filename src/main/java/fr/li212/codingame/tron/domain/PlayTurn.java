@@ -52,7 +52,7 @@ public class PlayTurn {
     }
 
     public Move getMove() {
-        //BasicSquareGridPrinter.print((BasicSquareGrid) grid, allPlayerContexts);
+        BasicSquareGridPrinter.print((BasicSquareGrid) grid, allPlayerContexts);
         final List<Move> possibleMoves = getPossibleMoves(controlledPlayerContext.getCurrentCoordinate(), grid);
 
         Move bestMove = null;
@@ -102,7 +102,10 @@ public class PlayTurn {
 
         GridWithScore initialNextDepthGrid = currentDepthGridAfterPlayerMove;
         for (PlayerContext opponentContext : opponentContexts) {
-            initialNextDepthGrid = simulateGivenPlayerTurn(currentDepthGridAfterPlayerMove.getGrid(), playerContextsForDepth, opponentContext);
+            GridWithScore potentialNextDepthGrid = simulateGivenPlayerTurn(currentDepthGridAfterPlayerMove.getGrid(), playerContextsForDepth, opponentContext);
+            if(potentialNextDepthGrid != null){
+                initialNextDepthGrid = potentialNextDepthGrid;
+            }
             nextPlayerContexts.add(PlayerContext.predictPlayerContext(initialNextDepthGrid.getSourcePlayer(), initialNextDepthGrid.getSourceMove()));
         }
 
