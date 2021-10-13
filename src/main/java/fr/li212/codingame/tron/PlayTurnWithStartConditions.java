@@ -1,15 +1,13 @@
 package fr.li212.codingame.tron;
 
-import fr.li212.codingame.tron.adapters.grid.AugmentedBasicSquareGridProvider;
-import fr.li212.codingame.tron.adapters.grid.BasicSquareGrid;
-import fr.li212.codingame.tron.adapters.grid.SquareCell;
-import fr.li212.codingame.tron.adapters.grid.SquareCoordinate;
+import fr.li212.codingame.tron.adapters.grid.*;
 import fr.li212.codingame.tron.adapters.io.OutputCodingameTurn;
 import fr.li212.codingame.tron.domain.PlayTurn;
 import fr.li212.codingame.tron.domain.parameters.GlobalParameters;
 import fr.li212.codingame.tron.domain.player.PlayerContext;
 import fr.li212.codingame.tron.domain.player.PlayerIdentifier;
 import fr.li212.codingame.tron.domain.port.OutputTurn;
+import fr.li212.codingame.tron.domain.providers.GridProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,7 @@ import java.util.List;
 class PlayTurnWithStartConditions {
 
     private final static AugmentedBasicSquareGridProvider AUGMENTED_BASIC_SQUARE_GRID_PROVIDER = new AugmentedBasicSquareGridProvider();
+    private final static GridProvider GRID_PROVIDER = new BasicSquareGridProvider();
     private final static OutputTurn OUTPUT_TURN = new OutputCodingameTurn();
 
 
@@ -68,8 +67,10 @@ class PlayTurnWithStartConditions {
         final BasicSquareGrid currentGrid = new BasicSquareGrid(GlobalParameters.GRID_WIDTH, GlobalParameters.GRID_HEIGHT, initialCells);
         final PlayTurn playTurn = new PlayTurn(
                 AUGMENTED_BASIC_SQUARE_GRID_PROVIDER,
+                GRID_PROVIDER,
                 currentGrid,
                 playerContexts,
+                playerContexts.stream().filter(PlayerContext::isControlledPlayerContext).map(PlayerContext::getPlayerIdentifier).findFirst().orElseThrow(IllegalStateException::new),
                 OUTPUT_TURN);
         playTurn.playMove();
         final long endTime = System.currentTimeMillis() - startTime;

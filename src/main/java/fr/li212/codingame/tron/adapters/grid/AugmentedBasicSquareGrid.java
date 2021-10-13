@@ -12,14 +12,12 @@ import java.util.stream.Collectors;
 
 public class AugmentedBasicSquareGrid implements AugmentedGrid {
 
-
     private final BasicSquareGrid underlyingGrid;
     private final Map<Coordinate, Set<Coordinate>> voronoiSpaces;
 
     public AugmentedBasicSquareGrid(
             final BasicSquareGrid underlyingGrid,
             final Collection<PlayerContext> playerContexts) {
-
         this.underlyingGrid = underlyingGrid;
         this.voronoiSpaces = VoronoiSpaceProvider.get(underlyingGrid)
                 .get(playerContexts.stream()

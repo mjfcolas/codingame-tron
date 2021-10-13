@@ -24,6 +24,9 @@ public class PlayerContext {
     }
 
     public static PlayerContext predictPlayerContext(final PlayerContext playerContext, final Move moveToPredict) {
+        if(moveToPredict == null){
+            return playerContext;
+        }
         return new PlayerContext(
                 playerContext.getPlayerIdentifier(),
                 playerContext.getStartCoordinate(),
