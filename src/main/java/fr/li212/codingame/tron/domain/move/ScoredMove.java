@@ -5,18 +5,18 @@ import fr.li212.codingame.tron.domain.ScoreCoefficients;
 public class ScoredMove implements Comparable<ScoredMove> {
     private final Move move;
     private final float voronoiScore;
-    private final float opponentVoronoiScoreSum;
+    private final float opponentScoresSum;
     private final int numberOfLibertiesAfter;
 
 
     public ScoredMove(
             final Move move,
             final float voronoiScore,
-            final float opponentVoronoiScoreSum,
+            final float opponentScoresSum,
             final int numberOfLibertiesAfter) {
         this.move = move;
         this.voronoiScore = voronoiScore;
-        this.opponentVoronoiScoreSum = opponentVoronoiScoreSum;
+        this.opponentScoresSum = opponentScoresSum;
         this.numberOfLibertiesAfter = numberOfLibertiesAfter;
     }
 
@@ -26,7 +26,7 @@ public class ScoredMove implements Comparable<ScoredMove> {
 
     public Integer getScore() {
         return (int) (voronoiScore * ScoreCoefficients.PLAYER_VORONOI.getCoefficient())
-                + (int) (opponentVoronoiScoreSum * ScoreCoefficients.OPPONENT_VORONOI_SUM.getCoefficient())
+                + (int) (opponentScoresSum * ScoreCoefficients.OPPONENT_SCORES.getCoefficient())
                 + (numberOfLibertiesAfter * ScoreCoefficients.LEAST_NUMBER_OF_LIBERTIES.getCoefficient());
     }
 
